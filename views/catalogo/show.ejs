@@ -1,0 +1,113 @@
+<% include ../partials/header %>
+
+
+
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-4">
+                <img style="min-width: 100%; max-width: 100%;" src='<%= libro.img %>'>
+                <br><br>
+                <form action="/catalogo/<%= libro._id %>?_method=DELETE" method="post">
+                    <button class="btn btn-danger">Eliminar Registro</button>
+                </form>
+                
+                <a href="/catalogo/<%= libro._id %>/edit" class="btn btn-info">Editar</a>
+                <a href="/catalogo/<%= libro._id %>/comment/new" class="btn btn-success">Comentar</a>
+                
+            </div>
+            <div class="col-5">
+                <p>
+                    <%= libro.titulo %>
+                </p>
+                <p>
+                    <%= libro.subtitulo %>
+                </p>
+                <p>
+                    Autor(s):
+                    <br>
+                        <% libro.authors.forEach((item) => { %>
+                            <a href='/author/<%= item._id %>'><%= item.authorName %></a> 
+                        <%}); %>
+
+                </p>
+
+                <p>
+                    <%= libro.descripcion %>
+                </p>
+
+            </div>
+            <div class="col-3">
+                <p>
+                    <%= libro.anioPublicacion %>
+                </p>
+                <p>
+                    <%= libro.pais %>
+                </p>
+                <p>
+                    <%= libro.ciudad %>
+                </p>
+                <p>
+                    <%= libro.editorial %>
+                </p>
+                <p>
+                    <%= libro.stock %>
+                </p>
+                <p>
+                    <%= libro.creado %>
+                </p>
+                <p>
+                    <%= libro.nuevo ? 'Si' : 'No' %>
+                </p>
+                <p>
+                    <%= libro.categoria %>
+                </p>
+                <p>
+                    <%= libro.temas %>
+                </p>
+                <p>
+                    <%= libro.keywords %>
+                </p>
+            </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+        <br>
+        <br>
+        <div class="row">
+
+            <div class="col-2"></div>
+            <div class="col-8">
+                <h4>Comentarios</h4>
+                <% libro.comments.forEach(function(item){ %>
+                    <p>
+                        <b>
+                            <%= item.user %>
+                        </b> -
+                        <%= item.text %>
+                    </p>
+                <%});%>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
+
+        <!-- OTROS LIBROS -->
+        <div class="row">
+            <% sameAuthor.forEach(function(item){ %>
+                <div class="col-3">
+                    <div class="card" style="width: 10rem;">
+                        <img class="card-img-top" src="<%= item.img %>" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= item.titulo %></h5>
+                            <p class="card-text"><%= item.nombreAutor + ' ' + item.apellidoAutor %> </p>
+                            <a href="\catalogo\<%= item._id %>" class="btn btn-info">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+
+        </div>
+        
+
+    </div>

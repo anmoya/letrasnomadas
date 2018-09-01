@@ -1,0 +1,111 @@
+<%include ../partials/header%>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <label for="filter-pric">Filtros</label>
+                <input class="form-control" type="number" name="filter-price" id="filter-price" placeholder="Precio..."> 
+                <input class="form-control" type="text" name="filter-name" id="filter-name" placeholder="Título...">
+                <input class="form-control" type="text" name="filter-author" id="filter-author" placeholder="Autor...">
+            </div>
+            <div class="col-10" id='catalogo-fila'>
+                <div class="row">
+                    <% libros.forEach(function(item){ %>
+                        <div data-price='<%= item.precio %>' class="book-representation col-12 col-sm-4 col-md-3 col-lg-2" data-fprice='off' data-ftitle='off'>
+                            <img class='book-img' src="<%= item.img %>" alt="Card image cap">
+                            <p class="book-data book-title">
+                                <% if (item.titulo.length > 41) { %>
+                                    <%= item.titulo.substring(0,41) + '...' %>
+                                        <% } else { %>
+                                            <%= item.titulo.substring(0,44) %>
+                                                <% } %>
+
+                            </p>
+                            <p class='book-data book-author'>
+                                <%= item.authors[0].authorName + ' ' + item.authors[0].authorLastName %>
+                            </p>
+                            <p class="book-data book-price">$
+                                <%= item.precio.toLocaleString('it-IT') %>
+                            </p>
+                            <a href="/catalogo/<%= item._id %>">info...</a>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script>
+
+        let filtroPrecio = document.getElementById('filter-price');
+        let filtroNombre = document.getElementById('filter-name');
+        let filtroAuthor = document.getElementById('filter-author');
+        
+
+        filtroPrecio.addEventListener('keyup', (e) => {
+            let libros = Array.from(document.getElementsByClassName('book-representation'));
+
+            libros.forEach((el) => {
+                var valor = document.getElementById('filter-price').value;
+                if (Number.parseInt(valor) > el.dataset.price) {
+                    //el.style.display = 'none';
+                    el.dataset.fprice = 'on';
+                } else {
+                    //el.style.display = 'block';
+                    el.dataset.fprice = 'off';
+                }
+                
+            });
+            desaparecer(libros);
+        });
+        filtroNombre.addEventListener(('keyup'), (e) => {
+            let libros = Array.from(document.getElementsByClassName('book-representation'));
+            let texto = filtroNombre.value;
+            let largoTexto = texto.length;
+            libros.forEach((el) => {
+                let tituloLibro = el.childNodes[3].innerText.trim().substring(0, largoTexto).toLowerCase();
+                if (texto.trim().substring(0, largoTexto).toLowerCase() == tituloLibro) {
+                    //el.style.display = 'block';
+                    el.dataset.ftitle = 'off';
+                } else {
+                    //el.style.display = 'none';
+                    el.dataset.ftitle = 'on';
+                }
+            });
+            desaparecer(libros);
+        });
+
+        filtroAuthor.addEventListener(('keyup'), (e) => {
+            let libros = Array.from(document.getElementsByClassName('book-representation'));
+            let texto = filtroAuthor.value;
+            let largoTexto = texto.length;
+            libros.forEach((el) => {
+                console.log(texto);
+                let authorLibro = el.childNodes[5].innerText.trim().substring(0, largoTexto).toLowerCase();
+                if (texto.trim().substring(0, largoTexto).toLowerCase() == authorLibro) {
+                    //el.style.display = 'block';
+                    el.dataset.fauthor = 'off';
+                } else {
+                    //el.style.display = 'none';
+                    el.dataset.fauthor = 'on';
+                }
+            });
+            desaparecer(libros);
+        });
+
+        let desaparecer = () => {
+            Array.from(document.getElementsByClassName('book-representation')).forEach( (el) => {
+                if (el.dataset.fprice == 'on' || el.dataset.ftitle == 'on' || el.dataset.fauthor == 'on'){
+                    el.style.display = 'none';
+                } else if (el.dataset.fprice == 'off' || el.dataset.ftitle == 'off' || el.dataset.fauthor == 'off') {
+                    el.style.display = 'block';
+                }
+            });
+        }
+        
+    </script>
+
+
+    <%include ../partials/footer%>

@@ -1,0 +1,18 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form action="/author/<%= author._id %>/edit?_method=PUT" method="POST">
+                <input value='<%= author.authorName %>' type="text" name="author[authorName]" id="author-name" class='form-control' placeholder='Nombre Autor'>
+                <input value='<%= author.authorLastName %>' type="text" name="author[authorLastName]" id="author-last-name" class='form-control' placeholder='Apellido Autor'>
+                <input value='<%= author.authorBornDate %>' type="text" name="author[authorBornDate]" id="author-" class='form-control' placeholder='Fecha Nacimiento Autor'>
+                <input value='<%= author.authorCountry %>' type="text" name="author[authorCountry]" id="author-country" class='form-control' placeholder='Pais Autor'>
+                <input value='<%= author.authorCity %>' type="text" name="author[authorCity]" id="author-city" class='form-control' placeholder='Ciudad Autor'>
+                <input value='<%= author.authorBio %>' type="text" name="author[authorBio]" id="author-bio" class='form-control' placeholder='Bio Autor'>
+                
+                <input type="submit" class='btn btn-info' value='Ingresar'>
+            </form>
+        </div>
+    </div>
+</div>

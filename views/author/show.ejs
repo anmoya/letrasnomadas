@@ -1,0 +1,34 @@
+<% include ../partials/header %>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <table class="table">
+                    <tr>
+                        <td>Nombre</td>
+                        <td><%= author.authorName %></td>
+                    </tr>
+                    <tr>
+                        <td>Apellido</td>
+                        <td><%= author.authorLastName %></td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Nacimiento</td>
+                        <td><%= author.authorBornDate %></td>
+                    </tr>
+                    <tr>
+                        <td>Pais</td>
+                        <td><%= author.authorCountry %></td>
+                    </tr>
+                    <tr>
+                        <td>Ciudad</td>
+                        <td><%= author.authorCity %></td>
+                    </tr>
+                    <tr>
+                        <td>Bio</td>
+                        <td><%= author.authorBio %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>

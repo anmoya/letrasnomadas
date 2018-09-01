@@ -1,0 +1,54 @@
+<% include ../partials/header %>
+
+    <div class="container" id='createBookForm'>
+        <form action="/catalogo/create" method="POST">
+            <div class="row">
+                <div class="col-6">
+                    <input class="form-control" type="text" name="libro[titulo]" id="tituloLibro" placeholder="Titulo" >
+                    <input class="form-control" type="text" name="libro[subtitulo]" id="subtituloLibro" placeholder="Subtitulo" >
+                    <input class="form-control" type="number" name="libro[anioPublicacion]" id="anioPublicacionLibro" placeholder="Año Publicacion"
+                        >
+                    <input class="form-control" type="text" name="libro[pais]" id="paisLibro" placeholder="Pais" >
+                    <input class="form-control" type="text" name="libro[ciudad]" id="ciudadLibro" placeholder="Ciudad" >
+                    <input class="form-control" type="text" name="libro[editorial]" id="editorialLibro" placeholder="Editorial" >
+                    <input class="form-control" type="text" name="libro[img]" id="imgLibro" placeholder="Imagen" >
+                    <input class="form-control" type="number" name="libro[precio]" id="precioLibro" placeholder="Precio" >
+                </div>
+                <div class="col-6">
+                    <input class="form-control" type="text" name="libro[descripcion]" id="descripcionLibro" placeholder="Descripción" >
+                    <input class="form-control" type="number" name="libro[stock]" id="stockLibro" placeholder="stock" >
+                    <input class="form-control" type="text" name="libro[nuevo]" id="nuevoLibro" placeholder="nuevo" >
+                    <input class="form-control" type="text" name="libro[categoria]" id="categoriaLibro" placeholder="Categoria" >
+                    <input class="form-control" type="text" name="libro[temas]" id="temasLibro" placeholder="Temas" >
+                    <input class="form-control" type="text" name="libro[keywords]" id="keywordsLibro" placeholder="Keywords" >
+                </div>
+                <!-- Datos Libro -->
+
+
+                <!--Datos Autor-->
+
+                <!-- Datos libreria -->
+
+
+                
+            </div>
+            <div class="row" style='margin-top: 20px;'>
+                <div class="col-4">
+                    <select class='form-control' name="authorID" onchange='paintAuthors(this)'>
+                        <option value='0'>Seleccione autores...</option>
+                        <% authors.forEach((item) => { %>
+                            <option value="<%= item._id %>">
+                                <%= item.authorName + ' ' + item.authorLastName %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-8">
+                    <div id="authors-selected"></div>
+                </div>
+            </div>
+            <input type="submit" class='btn btn-success' value="Ingresar">
+        </form>
+    </div>
+
+    <script src="/js/catalogo.js"></script>

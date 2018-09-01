@@ -1,0 +1,13 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <form action="/catalogo/<%= libro._id %>/comment" method="post">
+            <input class="form-control" type="text" name="comment[text]" id="comment-text">
+            <input class="form-control" type="text" name="comment[user]" id="comment-user">
+            <input type="submit" value="Agregar">
+        </form>
+    </div>
+    <div class="col-4"></div>
+</div>

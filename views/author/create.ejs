@@ -1,0 +1,17 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form action="/author/create" method="POST">
+                <input type="text" name="author[authorName]" id="author-name" class='form-control' placeholder='Nombre Autor'>
+                <input type="text" name="author[authorLastName]" id="author-last-name" class='form-control' placeholder='Apellido Autor'>
+                <input type="text" name="author[authorCountry]" id="author-country" class='form-control' placeholder='Pais Autor'>
+                <input type="text" name="author[authorCity]" id="author-city" class='form-control' placeholder='Ciudad Autor'>
+                <input type="text" name="author[authorBio]" id="author-bio" class='form-control' placeholder='Bio Autor'>
+                <input type="submit" class='btn btn-info' value='Ingresar'>
+            </form>
+        </div>
+    </div>
+</div>
+

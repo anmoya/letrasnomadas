@@ -1,0 +1,66 @@
+.card {
+    margin-top: 20px;
+}
+
+.card-body .card-title {
+    height: 50px;
+}
+
+.card-body .author-link   {
+    min-height: 75px;
+}
+
+@media (max-width: 400px) {
+    .book-img {
+        height: 3em;
+        width: 2em;
+    }
+}
+
+.action-button {
+    padding-right: 0px; 
+    padding-left: 0px;  
+    width: 45px;
+}
+
+.authors-buble {
+    border: 2px solid black; 
+    border-radius: 20px; 
+    padding: 10px;
+}
+
+.book-data {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.book-img {    
+    height: 14rem;
+    width: 100%;
+    padding: 3px;
+}
+
+.book-price {
+    font-weight: bold;
+    font-family: 'Cormorant Garamond', serif;
+    text-align: center;
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    padding-top: 15px;
+}
+
+.book-title {
+    height: 52px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.book-author {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    text-align: left;
+}
