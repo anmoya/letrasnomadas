@@ -2,34 +2,33 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-0 col-xl-2"></div>
             <div class="col-2">
                 <label for="filter-*">Filtros</label>
-                <input class="form-control" type="number" name="filter-price" id="filter-price" placeholder="Precio..."> 
+                <input class="form-control" type="number" name="filter-price" id="filter-price" placeholder="Precio...">
                 <input class="form-control" type="text" name="filter-name" id="filter-name" placeholder="Título...">
                 <input class="form-control" type="text" name="filter-author" id="filter-author" placeholder="Autor...">
             </div>
-            <div class="col-10 col-xl-6" id='catalogo-fila'>
+            <div class="col-10" id='catalogo-fila'>
                 <div class="row">
                     <% libros.forEach(function(item){ %>
-                        <div data-price='<%= item.precio %>' class="book-representation col-12 col-sm-4 col-md-3 col-lg-2" data-fprice='off' data-ftitle='off'>
-                            <img class='book-img' src="<%= item.img %>" alt="Card image cap">
-                            <p class="book-data book-title">
-                                <% if (item.titulo.length > 41) { %>
-                                    <%= item.titulo.substring(0,41) + '...' %>
-                                        <% } else { %>
-                                            <%= item.titulo.substring(0,44) %>
-                                                <% } %>
-
+                    <div class="card book-representation" style="width: 12rem;" data-price='<%= item.precio %>' data-fprice='off' data-ftitle='off'>
+                        <img class='book-img card-img-top' src="<%= item.img %>" alt="Card image cap">
+                        
+                        <div class="card-body">
+                            <p class="card-title book-data book-title">
+                            <% if (item.titulo.length > 41) { %>
+                                <%= item.titulo.substring(0,41) + '...' %>
+                            <% } else { %>
+                                <%= item.titulo.substring(0,44) %>
+                            <% } %>
                             </p>
-                            <p class='book-data book-author'>
+                            <p class='card-text book-data book-author'>
                                 <%= item.authors[0].authorName + ' ' + item.authors[0].authorLastName %>
                             </p>
-                            <p class="book-data book-price">$
-                                <%= item.precio.toLocaleString('it-IT') %>
-                            </p>
+                            
                             <a href="/catalogo/<%= item._id %>">info...</a>
                         </div>
+                    </div>
                         <% }); %>
                 </div>
             </div>
@@ -43,7 +42,7 @@
         let filtroPrecio = document.getElementById('filter-price');
         let filtroNombre = document.getElementById('filter-name');
         let filtroAuthor = document.getElementById('filter-author');
-        
+
 
         filtroPrecio.addEventListener('keyup', (e) => {
             let libros = Array.from(document.getElementsByClassName('book-representation'));
@@ -57,7 +56,7 @@
                     //el.style.display = 'block';
                     el.dataset.fprice = 'off';
                 }
-                
+
             });
             desaparecer(libros);
         });
@@ -97,15 +96,15 @@
         });
 
         let desaparecer = () => {
-            Array.from(document.getElementsByClassName('book-representation')).forEach( (el) => {
-                if (el.dataset.fprice == 'on' || el.dataset.ftitle == 'on' || el.dataset.fauthor == 'on'){
+            Array.from(document.getElementsByClassName('book-representation')).forEach((el) => {
+                if (el.dataset.fprice == 'on' || el.dataset.ftitle == 'on' || el.dataset.fauthor == 'on') {
                     el.style.display = 'none';
                 } else if (el.dataset.fprice == 'off' || el.dataset.ftitle == 'off' || el.dataset.fauthor == 'off') {
                     el.style.display = 'block';
                 }
             });
         }
-        
+
     </script>
 
 
