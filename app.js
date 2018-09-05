@@ -6,8 +6,9 @@ var methodOverride = require('method-override');
 var _ = require('underscore');
 
 
-
-mongoose.connect('mongodb://localhost/libreria');
+var uri = 'mongodb://sphoidldoh:@ds245512.mlab.com:45512/shiloh';
+mongoose.connect(uri);
+//mongoose.connect('mongodb://localhost/libreria');
 
 
 app.use(express.static('public'));

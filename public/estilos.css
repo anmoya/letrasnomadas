@@ -36,15 +36,15 @@
 }
 
 .book-img {    
-    height: 15rem;
+    height: 17rem;
     width: 100%;
     padding: 3px;
 }
 
 .book-price {
+    text-align: left;
     font-weight: bold;
     font-family: 'Cormorant Garamond', serif;
-    text-align: center;
     font-size: 25px;
     margin: 0;
     padding: 0;
@@ -61,6 +61,15 @@
 
 .book-author {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
+    font-size: 15px;
     text-align: left;
+}
+
+.card-img-top {
+    padding: 0px;
+}
+
+.card-body {
+    padding: 1px 5px 5px 5px;
+    text-align: center;
 }
