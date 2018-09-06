@@ -11,23 +11,27 @@
             <div class="col-10" id='catalogo-fila'>
                 <div class="row">
                     <% libros.forEach(function(item){ %>
-                    <div class="card book-representation" style="width: 12rem;" data-price='<%= item.precio %>' data-fprice='off' data-ftitle='off'>
-                        <img class='book-img card-img-top' src="<%= item.img %>" alt="Card image cap">
-                        
-                        <div class="card-body">
-                            <p class="card-title book-data book-title">
-                            <% if (item.titulo.length > 41) { %>
-                                <%= item.titulo.substring(0,41) + '...' %>
-                            <% } else { %>
-                                <%= item.titulo.substring(0,44) %>
-                            <% } %>
-                            </p>
-                            <p class='card-text book-data book-author'>
-                                <%= item.authors[0].authorName + ' ' + item.authors[0].authorLastName %>
-                            </p>
-                            
-                            <a href="/catalogo/<%= item._id %>">info...</a>
+ 
+                    <div class="col-3 book-representation" style="width: 12rem;" data-price='<%= item.precio %>' data-fprice='off' data-ftitle='off'>
+                        <div class="card">
+                                <img class='book-img card-img-top' src="<%= item.img %>" alt="Card image cap">
+                                <div class="card-body">
+                                    <p class="card-title book-data book-title">
+                                    <% if (item.titulo.length > 41) { %>
+                                        <%= item.titulo.substring(0,41) + '...' %>
+                                    <% } else { %>
+                                        <%= item.titulo.substring(0,44) %>
+                                    <% } %>
+                                    </p>
+                                    <p class='card-text book-data book-author'>
+                                        <%= item.authors[0].authorName + ' ' + item.authors[0].authorLastName %>
+                                    </p>
+                                    <p class="book-price" data-price='<%= item.precio %>'>$<%= item.precio.toLocaleString('cl-CL') %></p>
+                                    
+                                    <a class="btn btn-info" href="/catalogo/<%= item._id %>">Detalles</a>
+                                </div>
                         </div>
+                        
                     </div>
                         <% }); %>
                 </div>
@@ -65,7 +69,7 @@
             let texto = filtroNombre.value;
             let largoTexto = texto.length;
             libros.forEach((el) => {
-                let tituloLibro = el.childNodes[3].innerText.trim().substring(0, largoTexto).toLowerCase();
+                let tituloLibro = el.childNodes[1].childNodes[3].innerText.trim().substring(0, largoTexto).toLowerCase();
                 if (texto.trim().substring(0, largoTexto).toLowerCase() == tituloLibro) {
                     //el.style.display = 'block';
                     el.dataset.ftitle = 'off';
@@ -83,7 +87,7 @@
             let largoTexto = texto.length;
             libros.forEach((el) => {
                 console.log(texto);
-                let authorLibro = el.childNodes[5].innerText.trim().substring(0, largoTexto).toLowerCase();
+                let authorLibro = el.childNodes[1].childNodes[3].childNodes[3].innerText.trim().substring(0, largoTexto).toLowerCase();
                 if (texto.trim().substring(0, largoTexto).toLowerCase() == authorLibro) {
                     //el.style.display = 'block';
                     el.dataset.fauthor = 'off';
