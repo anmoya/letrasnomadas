@@ -4,11 +4,11 @@ var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose').set('debug',true);
 var methodOverride = require('method-override');
 var _ = require('underscore');
+var data        = require('./data.json');
 
-
-var uri = 'mongodb://sphoidldoh:@ds245512.mlab.com:45512/shiloh';
+var uri = `mongodb://${data[0]['USER']}:${data[0]['PASS']}@ds245512.mlab.com:45512/shiloh`;
 mongoose.connect(uri);
-//mongoose.connect('mongodb://localhost/libreria');
+mongoose.connect('mongodb://localhost/libreria');
 
 
 app.use(express.static('public'));

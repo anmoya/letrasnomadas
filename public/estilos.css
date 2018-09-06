@@ -2,9 +2,7 @@
     margin-top: 20px;
 }
 
-.card-body .card-title {
-    height: 50px;
-}
+
 
 .card-body .author-link   {
     min-height: 75px;
@@ -49,22 +47,25 @@
     margin: 0;
     padding: 0;
     position: relative;
-    padding-top: 15px;
 }
 
 .book-title {
-    height: 52px;
+
     font-family: 'Cormorant Garamond', serif;
     font-weight: bold;
     font-size: 16px;
 }
 
 .book-author {
+
     font-family: 'Cormorant Garamond', serif;
     font-size: 15px;
     text-align: left;
 }
+.card {
+    width: 11rem;
 
+}
 .card-img-top {
     padding: 0px;
 }

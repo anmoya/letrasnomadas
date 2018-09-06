@@ -9,18 +9,18 @@
                 <input class="form-control" type="text" name="filter-author" id="filter-author" placeholder="Autor...">
             </div>
             <div class="col-10" id='catalogo-fila'>
-                <div class="row">
+                <div class="row" >
                     <% libros.forEach(function(item){ %>
  
-                    <div class="col-3 book-representation" style="width: 12rem;" data-price='<%= item.precio %>' data-fprice='off' data-ftitle='off'>
+                    <div class="col-2 book-representation" onclick='reenviar("")' style="width: 12rem;" data-price='<%= item.precio %>' data-fprice='off' data-ftitle='off'>
                         <div class="card">
-                                <img class='book-img card-img-top' src="<%= item.img %>" alt="Card image cap">
+                                <a href='/catalogo/<%= item._id %>'><img class='book-img card-img-top' src="<%= item.img %>" alt="Card image cap"></a>
                                 <div class="card-body">
                                     <p class="card-title book-data book-title">
-                                    <% if (item.titulo.length > 41) { %>
-                                        <%= item.titulo.substring(0,41) + '...' %>
+                                    <% if (item.titulo.length > 20) { %>
+                                        <%= item.titulo.substring(0,20) + '...' %>
                                     <% } else { %>
-                                        <%= item.titulo.substring(0,44) %>
+                                        <%= item.titulo.substring(0,23) %>
                                     <% } %>
                                     </p>
                                     <p class='card-text book-data book-author'>
@@ -28,7 +28,7 @@
                                     </p>
                                     <p class="book-price" data-price='<%= item.precio %>'>$<%= item.precio.toLocaleString('cl-CL') %></p>
                                     
-                                    <a class="btn btn-info" href="/catalogo/<%= item._id %>">Detalles</a>
+                                    <!--a class="btn btn-info" href="/catalogo/<%= item._id %>">Detalles</a-->
                                 </div>
                         </div>
                         
@@ -107,6 +107,10 @@
                     el.style.display = 'block';
                 }
             });
+        }
+
+        var reenviar = (direccion) => {
+            window.location.href = direccion;
         }
 
     </script>
