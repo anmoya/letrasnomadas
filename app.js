@@ -8,7 +8,7 @@ var data        = require('./data.json');
 
 var uri = `mongodb://${data[0]['USER']}:${data[0]['PASS']}@ds245512.mlab.com:45512/shiloh`;
 mongoose.connect(uri);
-mongoose.connect('mongodb://localhost/libreria');
+//mongoose.connect('mongodb://localhost/libreria');
 
 
 app.use(express.static('public'));
