@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
+
 var uri = `mongodb://${data[0]['USER']}:${data[0]['PASS']}@ds245512.mlab.com:45512/shiloh`;
 mongoose.connect(uri);
 //mongoose.connect('mongodb://localhost/libreria');
@@ -56,6 +57,25 @@ app.use(catalogoRoutes);
 app.use(indexRoutes);
 app.use(commentRoutes);
 app.use(authorRoutes);
+
+
+
+
+app.get('/auth/login', (req, res) => {
+    res.render('auth/login');
+});
+
+app.post('/auth/login', 
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/auth/login'
+    }),
+    (req, res) => {
+});
+
+app.get('/auth/register', (req, res) => {
+    res.render('auth/register');
+});
 
 app.listen(
     5001,'localhost', () => console.log('corriendo')
