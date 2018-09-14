@@ -14,7 +14,7 @@ router.get('/catalogo', function (req, res) {
     });
 });
 
-router.get('/catalogo/create', function (req, res) {
+router.get('/catalogo/create', isLoggedIn, function (req, res) {
     Author.find({}, (err, allFoundedAuthors) => {
         if (err){ 
             console.log('Tuve problemas para encontrar los autores.')
@@ -27,7 +27,7 @@ router.get('/catalogo/create', function (req, res) {
     
 });
 
-router.post('/catalogo/create', function (req, res) {
+router.post('/catalogo/create', isLoggedIn, function (req, res) {
     console.log(req.body.authors);
     var book = new Libro({
         titulo          :   req.body.tituloLibro,
@@ -166,5 +166,14 @@ router.get('/catalogo/:id/edit', function (req, res) {
     })
 
 });
+
+function isLoggedIn(req, res, next){
+    // Si esta logueado, next
+    if (req.isAuthenticated()){
+        return next();
+        }
+        // si no, redirigimos
+        res.send('no autorizado');
+};
 
 module.exports = router;
