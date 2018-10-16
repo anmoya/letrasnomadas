@@ -38,12 +38,30 @@
             <!-- Datos libreria -->
             <input class="form-control" type="text" name="libro[descripcion]" value="<%= libro.descripcion %>" id="descripcionLibro"
                 placeholder="Descripción">
-            <input class="form-control" type="text" name="libro[stock]" value="<%= libro.stock %>" id="stockLibro" placeholder="stock">
-            <input class="form-control" type="text" name="libro[nuevo]" value="<%= libro.nuevo %>" id="nuevoLibro" placeholder="nuevo">
-            <input class="form-control" type="text" name="libro[categoria]" value="<%= libro.categoria %>" id="categoriaLibro" placeholder="Categoria">
-            <input class="form-control" type="text" name="libro[temas]" value="<%= libro.temas %>" id="temasLibro" placeholder="Temas">
-            <input class="form-control" type="text" name="libro[keywords]" value="<%= libro.keywords %>" id="keywordsLibro" placeholder="Keywords">
-            <input class="form-control" type="number" name="libro[precio]" value="<%= libro.precio %>" id="precioLibro" placeholder="Precio" >
+            <input class="form-control" type="text"     name="libro[stock]"     value="<%= libro.stock %>" id="stockLibro" placeholder="stock">
+            
+            <input class="form-control" type="text"     name="libro[categoria]" value="<%= libro.categoria %>" id="categoriaLibro" placeholder="Categoria">
+            <input class="form-control" type="text"     name="libro[temas]"     value="<%= libro.temas %>" id="temasLibro" placeholder="Temas">
+            <input class="form-control" type="text"     name="libro[keywords]"  value="<%= libro.keywords %>" id="keywordsLibro" placeholder="Keywords">
+            <input class="form-control" type="number"   name="libro[precio]"    value="<%= libro.precio %>" id="precioLibro" placeholder="Precio" >
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>¿Es nuevo?</th>
+                        <th>¿Destacado?</th>
+                        <th>¿Oferta?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input class="form-control" type="checkbox"     name="libro[nuevo]"      <%= libro.nuevo ? 'checked' : '' %> id="nuevoLibro"></td>
+                        <td><input class="form-control" type="checkbox"     name="libro[destacado]"  <%= libro.destacado ? 'checked' : '' %> id="destacadoLibro" ></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            
             <input type="submit" class='btn btn-success' value="Actualizar Registro">
         </form>
     </div>

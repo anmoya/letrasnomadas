@@ -57,7 +57,8 @@ var createBook = (auths) => {
             categoria: document.getElementById('categoriaLibro').value,
             temas: document.getElementById('temasLibro').value,
             keywords: document.getElementById('keywordsLibro').value,
-            precio: document.getElementById('precioLibro').value
+            precio: document.getElementById('precioLibro').value,
+            destacado: document.getElementById('destacadoLibro').checked ? true : false
         }
 
         
@@ -71,7 +72,9 @@ var createBook = (auths) => {
                 'content-type': 'application/json'
             },
             body: JSON.stringify(formData)
-        }).then((res) => res.json()
-        ).then((data) => alert(`Libro ${data.titulo} creado.`))
+        })
+        .then( res  => res.json())
+        .then( data  => console.log(data));
     }
 };
+

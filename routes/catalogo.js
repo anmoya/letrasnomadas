@@ -45,7 +45,8 @@ router.post('/catalogo/create', isLoggedIn, function (req, res) {
         categoria       :   req.body.categoria,
         temas           :   req.body.temas,
         keywords        :   req.body.keywords,
-        precio          :   req.body.precio
+        precio          :   req.body.precio,
+        destacado       :   req.body.destacado
     });
     
     if (book.nuevo == 'on') {
@@ -54,7 +55,8 @@ router.post('/catalogo/create', isLoggedIn, function (req, res) {
         book.nuevo = false;
     }
 
-    console.log(book);
+    console.log('##############');
+    console.log(book.destacado);
     
     book.save()
     .then(data => { res.send(data);
@@ -93,12 +95,24 @@ router.get('/catalogo/:id', function (req, res) {
     });
 });
 
+router.post('/catalogo/buscalibroporid', (req, res) => {
+    console.log('Llegaste');
+    console.log(req.body.id);
+    Libro.findById(req.body.id, (err, foundedBook) => {
+        if (err) console.log(`Error al buscar el libro: ${err}`);
+    }).then( () => {res.send(foundedBook);
+    }).catch( err => {
+        res.status(500).send({
+            message : 'Libro no encontrado'
+        })
+    });
+});
 
 
-router.put('/catalogo/:id/edit', function (req, res) {
-    console.log(req.body.authors);
+router.put('/catalogo/:id/edit', async function (req, res) {
+    
     var id = req.params.id;
-    console.log(id);
+    //console.log(id);
     var book = {
         titulo          :   req.body.tituloLibro,
         subtitulo       :   req.body.subtituloLibro,
@@ -115,7 +129,8 @@ router.put('/catalogo/:id/edit', function (req, res) {
         categoria       :   req.body.categoria,
         temas           :   req.body.temas,
         keywords        :   req.body.keywords,
-        precio          :   req.body.precio
+        precio          :   req.body.precio,
+        destacado       :   req.body.destacado
     };
     
     if (book.nuevo == 'on'){
@@ -124,12 +139,16 @@ router.put('/catalogo/:id/edit', function (req, res) {
         book.nuevo = false;
     }
 
-    Libro.findByIdAndUpdate(id, book, function(err, updatedBook){
+    await Libro.findByIdAndUpdate(id, book, function(err, updatedBook){
+        console.log('Libro antes de updatear.#######################');
+        console.log(book);
         if (err) {
             console.log(err);
         }
-    }).then(data => { res.send(data);
-    }).catch( err => {
+        console.log('Libro updateado##########################.');
+        console.log(book);
+    }).then(data => res.send(data))
+    .catch( err => {
         res.status(500).send({
             message: 'hola'
         });

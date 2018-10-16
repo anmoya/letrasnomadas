@@ -1,54 +1,76 @@
 <%include partials/header%>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-4">
-                Letras Nomadas
-            </div>
-            <div class="col-8 text-right">
-                link link link link link
-            </div>
-        </div>
-        <hr>
+<div class="container-fluid">
+    <div id='zona-libro-destacado' class="row libro-destacado" style='background-color: black; height: 300px;'></div>
 
-        <div class="row libro-destacado" style='background-color: black; height: 300px;'>
-            <div class="col-4">
+    <div id='mostrar-ofertas' class="row"></div>
+</div>
 
+<script>
+    // ########################################
+    //    Usa axios: va a la base de datos
+    //    y trae las ofertas. Las pinta
+    //      TO DO: separar en func chicas
+    // ########################################
+    async function cargarOfertas() {
+        let zona = document.getElementById('mostrar-ofertas');
+
+        let librosEnOferta = await axios.get('/ofertas')
+            .then(response => response.data)
+            .catch(error => {
+                console.log('Error');
+            });
+
+        var html = '';
+        let count = 0;
+        librosEnOferta.forEach(item => {
+            html +=
+                `<div class="col-3">
+                        <div class="card text-left|center|right">
+                            <img class="card-img" src="${item.img}" alt="">
+                            <div class="card-body">
+                                <h4 class="card-title">${item.titulo}</h4>
+                                <p class="card-text">${item.precio}</p>
+                            </div>
+                        </div>
+                    </div>`;
+            count++;
+
+        });
+
+        html +=
+            `<div class='col-12'>
+                <button class='btn btn-info btn-lg'>Ver mas ofertas</button>
             </div>
-            <div class="col-6">
+            `;
 
-            </div>
-        </div>
+        zona.innerHTML = html;
 
-        <div class="row">
-            <div class="col-3">
-                <div class="card text-left|center|right">
-                    <img class="card-img" src="https://http2.mlstatic.com/D_NQ_NP_221325-MLA25427931420_032017-F.jpg" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">Libro</h4>
-                        <p class="card-text">100</p>
+    };
+
+    async function cargarDestacado() {
+        let zona = document.getElementById('zona-libro-destacado');
+        let data = await axios.get('/admin/destacado')
+            .then( response => response.data)
+            .catch(err => err );
+            
+            let r = Math.floor(Math.random() * (data.length));
+            
+            zona.innerHTML = `
+                    <div class="col-3">
+                        <img class='destacado-libro-imagen' src='${data[r].img}' />
                     </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card text-left">
-                    <img class="card-img-top" src="https://http2.mlstatic.com/D_NQ_NP_221325-MLA25427931420_032017-F.jpg" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">Libro</h4>
-                        <p class="card-text">100</p>
+                    <div class="col-9">
+                        <p class='destacado-libro-parrafo'>${data[r].descripcion.substr(0,800)}...</p>
+                        <a class='btn btn-lg btn-info' href='catalogo/${data[0]._id}'>Ir a página de libro</a>
                     </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="card text-left|center|right">
-                    <img class="card-img-top" src="https://http2.mlstatic.com/D_NQ_NP_221325-MLA25427931420_032017-F.jpg" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">Libro</h4>
-                        <p class="card-text">100</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+            `;
+    }
 
-    <%include partials/footer%>
+    document.addEventListener('DOMContentLoaded', async function () {
+        await cargarOfertas();
+        await cargarDestacado();
+    }, false);
+</script>
+
+<%include partials/footer%>

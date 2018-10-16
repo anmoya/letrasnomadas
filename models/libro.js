@@ -21,6 +21,7 @@ var schemaLibro = new mongoose.Schema({
     precio: { type: Number, default: 10000 },
     precioOferta: { type: Number, default: 9000 },
     oferta: { type: Boolean, default: false },
+    destacado: { type: Boolean, default: false },
 
     comments : [{
         type: mongoose.Schema.Types.ObjectId,

@@ -1,10 +1,15 @@
 <% include ../partials/header %>
 <div class="container">
+<form action="/auth/register" method="POST">
         <h1>Register</h1>
-        
-        <input type="text" name="" id="" class='form-control' placeholder="Nombre">
-        <input type="text" name="" id="" class='form-control' placeholder="Apellido">
-        <input type="text" name="" id="" class='form-control' placeholder="Sitio web">
-        <input type="text" name="" id="" class='form-control' placeholder="Descripción">
+        <input type="text" name="username" id="" class='form-control' placeholder="Username">
+        <input type="text" name="password" id="password" class='form-control' placeholder="Password">
+        <input type="text" name="password2" id="password2" class='form-control' placeholder="Verify Password">
+        <input type="text" name="userrol" id="" class='form-control' placeholder="Rol">
+        <input type="text" name="personName" id="" class='form-control' placeholder="Nombre">
+        <input type="text" name="personLastName" id="" class='form-control' placeholder="Apellido">
+        <input type="text" name="personUrl" id="" class='form-control' placeholder="Sitio web">
+        <input type="text" name="personDesc" id="" class='form-control' placeholder="Descripción">
         <input type="submit" class="btn btn-info">
+</form>
 </div>

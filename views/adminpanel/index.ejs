@@ -1,0 +1,138 @@
+<% include ../partials/header %>
+
+<h1 class="text-center">Panel de administración</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1">
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaOfertas()'>Ofertas</button>
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaDestacado()'>Destacado</button>
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaLibros()'>Libros</button>
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaGeneric()'>asdf</button>
+        </div>
+        <div class="col-11">
+            <div id="admin-functionpainted-zone" class="container">
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+    
+    var zone = document.getElementById('admin-functionpainted-zone');
+    async function pintaOfertas() {
+        zone.innerHTML = '';
+        let data = await fetch('/admin/ofertas', {
+            method: 'GET'
+        })
+            .then((response) => response.json()
+            )
+            .then((libros) => libros);
+
+        let libros = await generaOfertas(data);
+        zone.innerHTML = ``;
+        zone.innerHTML += libros;
+        zone.innerHtml += `</table>`;
+    }
+
+    async function pintaDestacado() {
+        zone.innerHTML = '';
+        zone.innerHTML += `<h1>Libro destacado:</h1>`;
+
+        let data = await axios.get('/admin/destacado', {
+            method : 'GET'
+        })
+        .then( response => response.data )
+        .catch( error => console.log( error ));
+
+        zone.innerHTML += `<table class='table'>
+                <tr>
+                        <td>${data[0]._id}</td>
+                        <td>${data[0].titulo}</td>
+                        <td><button onclick='quitar(this)' class='btn btn-warning' data-isoferta='${data[0].oferta}'>Quitar Oferta</button></td>
+                </tr>`;
+        zone.innerHtml += `</table>`;
+
+
+        console.log(data);
+    }
+
+    function pintaLibros() {
+        zone.innerHTML = '';
+        zone.innerHTML = `<h1>Libros</h1>`;
+    }
+
+    function pintaGeneric() {
+        zone.innerHTML = '';
+        zone.innerHTML = `<h1>Generic</h1>`;
+    }
+
+    //#######################################
+    //   Toma la data y la convierte en
+    //   filas de tabla, si oferta is true
+    //#######################################
+    async function generaOfertas(data) {
+        let html = '<table class="table">';
+        data.forEach((item) => {
+            if (item.oferta) {
+                html += `<tr>
+                        <td>${item._id}</td>
+                        <td>${item.titulo}</td>
+                        <td>
+                            <button onclick='quitar(this)' class='btn btn-warning' data-isoferta='${item.oferta}'>Quitar Oferta</button>
+                        </td>
+                    </tr>`;
+            }
+        });
+
+        html += '</table>';
+        return html;
+    }
+
+    async function generaDestacado(data) {
+        let html = '<table class="table">';
+        data.forEach((item) => {
+                html += `<tr>
+                        <td>${item._id}</td>
+                        <td>${item.titulo}</td>
+                        <td><button onclick='quitar(this)' class='btn btn-warning' data-isoferta='${item.oferta}'>Quitar Oferta</button></td>
+                    </tr>`;
+
+        });
+
+        html += '</table>';
+        return html;
+    }
+
+    function quitar(elemento) {
+        let tr = elemento.parentNode.parentNode;
+        let id = tr.childNodes[1].innerHTML;
+        console.log(tr);
+        console.log(id);
+        
+        axios.put('/admin/ofertas/quitar', {
+            id : id
+            })
+            .then(function (response) {
+                if (response.data)
+                    tr.style.display = 'none';
+                else
+                    throw Error('No recibimos respuesta');
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(function () {
+            });
+
+    }
+
+    
+
+
+</script>
+
+<% include ../partials/footer %>

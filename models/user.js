@@ -5,7 +5,14 @@ const passportLocalMongoose = require('passport-local-mongoose');
 // creamos esquema del usuario
 let UserSchema = new mongoose.Schema({
     userName: String,
-    password: String
+    password: String,
+    userRol: String,
+    personName : String,
+    personLastName : String,
+    personUrl : String,
+    personDesc : String,
+    createdAt : { type: Date, default: Date.now },
+    updatedAt : { type: Date, default: Date.now }
 });
 
 // Inserta metodos al esquema que se utilizaran para la autenticacion

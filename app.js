@@ -5,16 +5,18 @@ var mongoose    = require('mongoose').set('debug',true);
 var methodOverride = require('method-override');
 var _ = require('underscore');
 var data        = require('./data.json');
+let Libro = require('./models/libro');
 
 // require passport, passport-local (estrategia)
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 
 // RUTAS
-const catalogoRoutes      = require('./routes/catalogo');
-const indexRoutes         = require('./routes/index');
-const commentRoutes       = require('./routes/comment');
-const authorRoutes        = require('./routes/author');
+const catalogoRoutes        = require('./routes/catalogo');
+const indexRoutes           = require('./routes/index');
+const commentRoutes         = require('./routes/comment');
+const authorRoutes          = require('./routes/author');
+const adminRoutes           = require('./routes/admin');
 
 
 
@@ -57,7 +59,7 @@ app.use(catalogoRoutes);
 app.use(indexRoutes);
 app.use(commentRoutes);
 app.use(authorRoutes);
-
+app.use(adminRoutes);
 
 
 
@@ -77,7 +79,46 @@ app.get('/auth/register', (req, res) => {
     res.render('auth/register');
 });
 
+app.post('/auth/register', (req, res) => {
+    var newUser = new User({ 
+        username: req.body.username,
+        userrol: req.body.userrol,
+        personName: req.body.personName, 
+        personLastName: req.body.personLastName, 
+        personUrl : req.body.personUrl, 
+        personDesc: req.body.personDesc,
+        userRol : String
+    });
+    console.log(newUser);
+    User.register(newUser, req.body.password, (err, user) => {
+        if (err){
+            console.log(err);
+            return res.redirect('/auth/register');
+        } else {
+            passport.authenticate('local')(req, res, () => {
+                res.redirect('/');
+            });
+        }
+    });
+});
+
+app.get('/adminpanel', (req, res) => {
+    res.render('adminpanel/index');
+});
+
+app.get('/ofertas', (req, res) => {
+    Libro.find({ oferta: true }, ( err, foundedBooks ) => {
+        if ( err )
+            console.log('Tuve un error al traer las ofertas: \n' + err);
+        else
+            res.send(foundedBooks);
+    });
+});
+
+
 app.listen(
     5001,'localhost', () => console.log('corriendo')
 );
+
+
 
