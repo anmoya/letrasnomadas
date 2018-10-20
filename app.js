@@ -17,6 +17,7 @@ const indexRoutes           = require('./routes/index');
 const commentRoutes         = require('./routes/comment');
 const authorRoutes          = require('./routes/author');
 const adminRoutes           = require('./routes/admin');
+const categoriasRoutes           = require('./routes/categoria');
 
 
 
@@ -60,6 +61,7 @@ app.use(indexRoutes);
 app.use(commentRoutes);
 app.use(authorRoutes);
 app.use(adminRoutes);
+app.use(categoriasRoutes);
 
 
 

@@ -2,8 +2,6 @@
     margin-top: 20px;
 }
 
-
-
 .card-body .author-link   {
     min-height: 75px;
 }
@@ -97,4 +95,53 @@
 .destacado-libro-parrafo {
     text-align: justify;
     padding: 10px;
+}
+
+/* ###########################
+            HOME
+##############################*/
+
+.logo-ln {
+    color: red;
+    height: 75px;
+    width: 150px;
+}
+
+/* ###########################
+            Categoria
+##############################*/
+
+
+
+#cat-generic {
+    background-color: lightcoral;
+    background-size: cover;
+    -webkit-filter: grayscale(100%);
+    filter: gray;
+}
+
+#cat-generic:hover {
+    filter: none;
+}
+
+.categoria-elemento {
+    padding-top: 110px;
+    border: 1px solid white;
+    text-align: center;
+    border-radius: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 70px;
+    font-weight: bold;
+    color: white;
+}
+
+#cat-historia {
+    background: url('https://upload.wikimedia.org/wikipedia/commons/0/0f/Malón_Atlas_de_la_historia_f%C3%ADsica_y_pol%C3%ADtica_de_Chile.jpg');
+    background-size: cover;
+    -webkit-filter: grayscale(100%);
+    filter: gray;
+}
+
+#cat-historia:hover {
+    filter: none;
 }
