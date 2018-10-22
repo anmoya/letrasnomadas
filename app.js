@@ -17,7 +17,7 @@ const indexRoutes           = require('./routes/index');
 const commentRoutes         = require('./routes/comment');
 const authorRoutes          = require('./routes/author');
 const adminRoutes           = require('./routes/admin');
-const categoriasRoutes           = require('./routes/categoria');
+const categoriaRoutes           = require('./routes/categoria');
 
 
 
@@ -61,7 +61,7 @@ app.use(indexRoutes);
 app.use(commentRoutes);
 app.use(authorRoutes);
 app.use(adminRoutes);
-app.use(categoriasRoutes);
+app.use(categoriaRoutes);
 
 
 
@@ -104,22 +104,14 @@ app.post('/auth/register', (req, res) => {
     });
 });
 
-app.get('/adminpanel', (req, res) => {
-    res.render('adminpanel/index');
-});
 
-app.get('/ofertas', (req, res) => {
-    Libro.find({ oferta: true }, ( err, foundedBooks ) => {
-        if ( err )
-            console.log('Tuve un error al traer las ofertas: \n' + err);
-        else
-            res.send(foundedBooks);
-    });
-});
+
+
 
 
 app.listen(
-    5001,'localhost', () => console.log('corriendo')
+    process.env.PORT || 5001,
+    () => console.log('corriendo')
 );
 
 

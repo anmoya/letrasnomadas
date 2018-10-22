@@ -1,8 +1,25 @@
-var express = require('express');
-var router = express.Router();
-var Libro = require('../models/libro');
-const Author = require('../models/author');
 
+const express     = require('express');
+const router      = express.Router();
+/*  ################ 
+        MODELOS 
+    ################ */
+const Libro       = require('../models/libro');
+const Author    = require('../models/author');
+
+
+/*  #################### 
+        SABER SI
+        ESTÁ LOGUEADO
+    #################### */
+let isLoggedIn = (req, res, next) => {
+    // Si esta logueado, next
+    if (req.isAuthenticated()){
+        return next();
+        }
+        // si no, redirigimos
+        res.send('no autorizado');
+};
 
 router.get('/catalogo', function (req, res) {
     Libro.find({}).populate('authors').exec(function (err, allBooks) {
@@ -109,7 +126,7 @@ router.post('/catalogo/buscalibroporid', (req, res) => {
 });
 
 
-router.put('/catalogo/:id/edit', async function (req, res) {
+router.put('/catalogo/:id/edit', isLoggedIn,  async function (req, res) {
     
     var id = req.params.id;
     //console.log(id);
@@ -155,7 +172,7 @@ router.put('/catalogo/:id/edit', async function (req, res) {
     });
 });
 
-router.delete('/catalogo/:id', function (req, res) {
+router.delete('/catalogo/:id', isLoggedIn, function (req, res) {
     Libro.findByIdAndRemove(req.params.id, function (err, deletedBook) {
         if (err) {
             console.log('Problema al eliminar.');
@@ -166,7 +183,7 @@ router.delete('/catalogo/:id', function (req, res) {
 });
 
 // EDIT
-router.get('/catalogo/:id/edit', function (req, res) {
+router.get('/catalogo/:id/edit', isLoggedIn, function (req, res) {
     Libro.findById(req.params.id).populate('authors').exec(function (err, foundedBook) {
         if (err) {
             console.log('No encontrè el libro.')
@@ -186,13 +203,5 @@ router.get('/catalogo/:id/edit', function (req, res) {
 
 });
 
-function isLoggedIn(req, res, next){
-    // Si esta logueado, next
-    if (req.isAuthenticated()){
-        return next();
-        }
-        // si no, redirigimos
-        res.send('no autorizado');
-};
 
 module.exports = router;

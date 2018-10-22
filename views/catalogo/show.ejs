@@ -8,12 +8,15 @@
             <div class="col-4">
                 <img style="min-width: 100%; max-width: 100%;" src='<%= libro.img %>'>
                 <br><br>
+                <% if (currentUser) { %>
                 <form action="/catalogo/<%= libro._id %>?_method=DELETE" method="post">
                     <button class="btn btn-danger">Eliminar Registro</button>
                 </form>
                 
                 <a href="/catalogo/<%= libro._id %>/edit" class="btn btn-info">Editar</a>
                 <a href="/catalogo/<%= libro._id %>/comment/new" class="btn btn-success">Comentar</a>
+                <% } %>
+                
                 
             </div>
             <div class="col-5">

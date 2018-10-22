@@ -3,6 +3,9 @@ var router = express.Router();
 var Libro = require('../models/libro');
 var moment = require('moment');
 
+router.get('/adminpanel', (req, res) => {
+    res.render('adminpanel/index');
+});
 
 router.get('/admin/ofertas', async (req, res) => {
     let foundedBooks = await Libro.find({}, async ( err, allFoundedBook ) => {
