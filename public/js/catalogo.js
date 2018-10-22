@@ -65,16 +65,13 @@ var createBook = (auths) => {
         var metodo = window.location.pathname == '/catalogo/create' ? 'POST' : 'PUT';
         console.log(`Haré un post a ${window.location.pathname} por ${metodo}`);
 
-        fetch(window.location.pathname, {
-            method: metodo,
-            headers: {
-                'accept': 'application/json, text/plain, */*',
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(formData)
+        axios.put(window.location.pathname, formData)
+        .then( res  => {
+            alert(  `El libro ha sido actualizado correctamente.\n
+                    Libro: ${res.data.titulo}
+                    `);
         })
-        .then( res  => res.json())
-        .then( data  => console.log(data));
+        .catch( data  => console.log(data));
     }
 };
 

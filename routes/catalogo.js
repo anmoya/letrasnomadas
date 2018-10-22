@@ -1,11 +1,11 @@
 
-const express     = require('express');
-const router      = express.Router();
+const express = require('express');
+const router = express.Router();
 /*  ################ 
         MODELOS 
     ################ */
-const Libro       = require('../models/libro');
-const Author    = require('../models/author');
+const Libro = require('../models/libro');
+const Author = require('../models/author');
 
 
 /*  #################### 
@@ -14,58 +14,36 @@ const Author    = require('../models/author');
     #################### */
 let isLoggedIn = (req, res, next) => {
     // Si esta logueado, next
-    if (req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         return next();
-        }
-        // si no, redirigimos
-        res.send('no autorizado');
+    }
+    // si no, redirigimos
+    res.send('no autorizado');
 };
 
-router.get('/catalogo', function (req, res) {
-    Libro.find({}).populate('authors').exec(function (err, allBooks) {
-        if (err) {
-            console.log('No pude encontrar libros en la base de datos.');
-        } else {
+router.get('/catalogo', (req, res) => {
+    console.log('Buscando libros: ');
+    let libros = Libro.find({}).populate('authors').exec(function (err, allBooks) {
+        if (err)
+            console.log(`Error:\n${err}\n#####################`);
+        else {
             res.render('catalogo/index', { libros: allBooks });
         }
     });
 });
 
-router.get('/catalogo/create', isLoggedIn, function (req, res) {
-    Author.find({}, (err, allFoundedAuthors) => {
-        if (err){ 
-            console.log('Tuve problemas para encontrar los autores.')
-            console.log(err);
-        }
-        else {
-            res.render('catalogo/create', { authors : allFoundedAuthors });
-        }
-    });
-    
+router.get('/catalogo/create', isLoggedIn, async (req, res) => {
+    let allAuthors = await searchAllAuthors(); // Buscamos los autores
+    res.render('catalogo/create', { authors: allAuthors }); // Enviamos a la vista
 });
 
-router.post('/catalogo/create', isLoggedIn, function (req, res) {
+
+
+router.post('/catalogo/create', isLoggedIn, (req, res) => {
     console.log(req.body.authors);
-    var book = new Libro({
-        titulo          :   req.body.tituloLibro,
-        subtitulo       :   req.body.subtituloLibro,
-        nuevo           :   req.body.nuevo,
-        anioPublicacion :   req.body.anioPublicacion,
-        pais            :   req.body.pais,
-        ciudad          :   req.body.ciudad,
-        editorial       :   req.body.editorial,
-        img             :   req.body.img,
-        authors         :   req.body.authors,
-        descripcion     :   req.body.descripcion,
-        stock           :   req.body.stock,
-        nuevo           :   req.body.nuevo,
-        categoria       :   req.body.categoria,
-        temas           :   req.body.temas,
-        keywords        :   req.body.keywords,
-        precio          :   req.body.precio,
-        destacado       :   req.body.destacado
-    });
-    
+    // Crea libro en base al request
+    let book = createBookObject(req.body);
+
     if (book.nuevo == 'on') {
         book.nuevo = true;
     } else {
@@ -74,14 +52,15 @@ router.post('/catalogo/create', isLoggedIn, function (req, res) {
 
     console.log('##############');
     console.log(book.destacado);
-    
+
     book.save()
-    .then(data => { res.send(data);
-    }).catch( err => {
-        res.status(500).send({
-            message: err.message
+        .then(data => {
+            res.send(data);
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message
+            });
         });
-    });
 });
 
 router.get('/catalogo/:id', function (req, res) {
@@ -97,7 +76,7 @@ router.get('/catalogo/:id', function (req, res) {
             // ############################
             Libro.find(
                 {
-                    _id:  foundedBook.authors[0]
+                    _id: foundedBook.authors[0]
                 },
                 function (err, foundedSameAuthor) {
                     if (err) {
@@ -117,59 +96,44 @@ router.post('/catalogo/buscalibroporid', (req, res) => {
     console.log(req.body.id);
     Libro.findById(req.body.id, (err, foundedBook) => {
         if (err) console.log(`Error al buscar el libro: ${err}`);
-    }).then( () => {res.send(foundedBook);
-    }).catch( err => {
+    }).then(() => {
+        res.send(foundedBook);
+    }).catch(err => {
         res.status(500).send({
-            message : 'Libro no encontrado'
+            message: 'Libro no encontrado'
         })
     });
 });
 
 
-router.put('/catalogo/:id/edit', isLoggedIn,  async function (req, res) {
-    
+router.put('/catalogo/:id/edit',  async (req, res) => {
+
     var id = req.params.id;
-    //console.log(id);
-    var book = {
-        titulo          :   req.body.tituloLibro,
-        subtitulo       :   req.body.subtituloLibro,
-        nuevo           :   req.body.nuevo,
-        anioPublicacion :   req.body.anioPublicacion,
-        pais            :   req.body.pais,
-        ciudad          :   req.body.ciudad,
-        editorial       :   req.body.editorial,
-        img             :   req.body.img,
-        authors         :   req.body.authors,
-        descripcion     :   req.body.descripcion,
-        stock           :   req.body.stock,
-        nuevo           :   req.body.nuevo,
-        categoria       :   req.body.categoria,
-        temas           :   req.body.temas,
-        keywords        :   req.body.keywords,
-        precio          :   req.body.precio,
-        destacado       :   req.body.destacado
-    };
-    
-    if (book.nuevo == 'on'){
+    let book = createBookObject(req.body);
+
+
+    if (book.nuevo == 'on') {
         book.nuevo = true;
     } else {
         book.nuevo = false;
     }
 
-    await Libro.findByIdAndUpdate(id, book, function(err, updatedBook){
-        console.log('Libro antes de updatear.#######################');
-        console.log(book);
+    await Libro.findByIdAndUpdate(id, book, async (err, updatedBook) => {
         if (err) {
             console.log(err);
+        } else {
+            return updatedBook;
         }
-        console.log('Libro updateado##########################.');
-        console.log(book);
-    }).then(data => res.send(data))
-    .catch( err => {
-        res.status(500).send({
-            message: 'hola'
+    })
+    .then(data => { 
+        res.send(data);
+    })
+    .then( data => JSON.stringify(data))
+    .catch(err => {
+            res.status(500).send({
+                message: err
+            });
         });
-    });
 });
 
 router.delete('/catalogo/:id', isLoggedIn, function (req, res) {
@@ -183,25 +147,66 @@ router.delete('/catalogo/:id', isLoggedIn, function (req, res) {
 });
 
 // EDIT
-router.get('/catalogo/:id/edit', isLoggedIn, function (req, res) {
+router.get('/catalogo/:id/edit',  function (req, res) {
     Libro.findById(req.params.id).populate('authors').exec(function (err, foundedBook) {
         if (err) {
             console.log('No encontrè el libro.')
             console.log(err);
         } else {
-            Author.find({}, function( err, allFoundedAuthors){
-                if (err){
+            Author.find({}, function (err, allFoundedAuthors) {
+                if (err) {
                     console.log('No pude encontrar a los autores.')
-                }   else {
+                } else {
                     console.log(foundedBook);
-                    res.render('./catalogo/edit', { libro: foundedBook, authors : allFoundedAuthors });
+                    res.render('./catalogo/edit', { libro: foundedBook, authors: allFoundedAuthors });
                 }
             });
-            
+
         }
     })
 
 });
 
+
+/**
+ * Métodos 
+ */
+
+// BUSCA TODOS LOS AUTORES
+let searchAllAuthors = async () => {
+    let autores = await Author.find({}, (err, allFoundedAuthors) => {
+        if
+        (err) console.log(`Error: \n ${err}`);
+        else
+            return allFoundedAuthors;
+    });
+
+    return autores;
+}
+
+// CREA OBJETO LIBRO
+let createBookObject = (request) => {
+    var book = {
+        titulo: request.tituloLibro,
+        subtitulo: request.subtituloLibro,
+        nuevo: request.nuevo,
+        anioPublicacion: request.anioPublicacion,
+        pais: request.pais,
+        ciudad: request.ciudad,
+        editorial: request.editorial,
+        img: request.img,
+        authors: request.authors,
+        descripcion: request.descripcion,
+        stock: request.stock,
+        nuevo: request.nuevo,
+        categoria: request.categoria,
+        temas: request.temas,
+        keywords: request.keywords,
+        precio: request.precio,
+        destacado: request.destacado
+    };
+
+    return book;
+}
 
 module.exports = router;

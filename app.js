@@ -105,13 +105,12 @@ app.post('/auth/register', (req, res) => {
 });
 
 
-
-
-
-
+/*##########################
+    PUERTO Y CB DE EXEC
+##########################*/
 app.listen(
     process.env.PORT || 5001,
-    () => console.log('corriendo')
+    () => console.log('Funcionando en puerto ...')
 );
 
 
