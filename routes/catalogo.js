@@ -7,7 +7,6 @@ const router = express.Router();
 const Libro = require('../models/libro');
 const Author = require('../models/author');
 
-
 /*  #################### 
         SABER SI
         ESTÁ LOGUEADO
@@ -21,9 +20,9 @@ let isLoggedIn = (req, res, next) => {
     res.send('no autorizado');
 };
 
+
 router.get('/catalogo', (req, res) => {
-    console.log('Buscando libros: ');
-    let libros = Libro.find({}).populate('authors').exec(function (err, allBooks) {
+    Libro.find({}).populate('authors').exec(function (err, allBooks) {
         if (err)
             console.log(`Error:\n${err}\n#####################`);
         else {
@@ -106,7 +105,7 @@ router.post('/catalogo/buscalibroporid', (req, res) => {
 });
 
 
-router.put('/catalogo/:id/edit',  async (req, res) => {
+router.put('/catalogo/:id/edit', async (req, res) => {
 
     var id = req.params.id;
     let book = createBookObject(req.body);
@@ -125,18 +124,17 @@ router.put('/catalogo/:id/edit',  async (req, res) => {
             return updatedBook;
         }
     })
-    .then(data => { 
-        res.send(data);
-    })
-    .then( data => JSON.stringify(data))
-    .catch(err => {
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
             res.status(500).send({
                 message: err
             });
         });
 });
 
-router.delete('/catalogo/:id', isLoggedIn, function (req, res) {
+router.delete('/catalogo/:id', isLoggedIn, (req, res) => {
     Libro.findByIdAndRemove(req.params.id, function (err, deletedBook) {
         if (err) {
             console.log('Problema al eliminar.');
@@ -147,24 +145,20 @@ router.delete('/catalogo/:id', isLoggedIn, function (req, res) {
 });
 
 // EDIT
-router.get('/catalogo/:id/edit',  function (req, res) {
+router.get('/catalogo/:id/edit', async (req, res) => {
+    let authors = await searchAllAuthors();
+
     Libro.findById(req.params.id).populate('authors').exec(function (err, foundedBook) {
         if (err) {
             console.log('No encontrè el libro.')
             console.log(err);
         } else {
-            Author.find({}, function (err, allFoundedAuthors) {
-                if (err) {
-                    console.log('No pude encontrar a los autores.')
-                } else {
-                    console.log(foundedBook);
-                    res.render('./catalogo/edit', { libro: foundedBook, authors: allFoundedAuthors });
-                }
+            res.render('./catalogo/edit', {
+                libro: foundedBook,
+                authors: authors
             });
-
         }
-    })
-
+    });
 });
 
 
@@ -208,5 +202,7 @@ let createBookObject = (request) => {
 
     return book;
 }
+
+
 
 module.exports = router;
