@@ -31,6 +31,10 @@ var schemaLibro = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Author',
         default: 'ObjectId("5b85db2c6158713643a2e3db")'
+    }],
+    resenias: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Resena'
     }]
 });
 

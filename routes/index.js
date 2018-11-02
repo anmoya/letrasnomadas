@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Libro     = require('../models/libro');
+const Resena    = require('../models/resena');
 
 
 router.get('/', function(req, res){
@@ -17,6 +18,37 @@ router.get('/mediosentrega', ( req, res ) => {
 
 router.get('/faq', ( req, res ) => {
     res.render('index/faq');
+});
+
+router.post('/index/libroporid', async (req, res) => {
+    let id = req.body.identificador;
+    let libro = await Libro.findById(id, ( err, foundedBook ) => {
+        if ( err ) return console.log(err);
+        return foundedBook;
+    });
+    res.send(libro);
+});
+
+router.post('/index/agregarResenia', async (req, res) => {
+    console.log(req.body.obj);
+    let obj = req.body.obj;
+    let id  = req.body.libro;
+
+
+    Libro.findById(id, (err, foundedBook) => {
+        if (err){console.log('Error al encontrar el libro.')}
+        else {
+            Resena.create(obj, (err, reseniaCreated) => {
+                if (err){
+                    console.log('Error al agregar comentario a libro ' + foundedBook.titulo);
+                } else {
+                    foundedBook.resenias.push(reseniaCreated);
+                    foundedBook.save();
+                    res.send('Se agregó reseña');
+                }
+            });
+        }
+    });    
 });
 
 router.get('/ofertas', (req, res) => {

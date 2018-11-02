@@ -1,70 +1,105 @@
 <% include ../partials/header %>
-    <h1>Edit</h1>
 
-    <div class="container" id='createBookForm'>
-        <form action="/catalogo/<%= libro._id %>?_method=PUT" method="POST" id="">
-            <!-- Datos Libro -->
-            <input type="hidden" name="libro[id]" id="idLibro" value="<%= libro._id %>">
-            <input class="form-control" type="text" name="libro[titulo]" value="<%= libro.titulo %>" id="tituloLibro" placeholder="Titulo">
-            <input class="form-control" type="text" name="libro[subtitulo]" value="<%= libro.subtitulo %>" id="subtituloLibro" placeholder="Subtitulo">
-            <input class="form-control" type="text" name="libro[anioPublicacion]" value="<%= libro.anioPublicacion %>" id="anioPublicacionLibro"
-                placeholder="Año Publicacion">
-            <input class="form-control" type="text" name="libro[pais]" value="<%= libro.pais %>" id="paisLibro" placeholder="Pais">
-            <input class="form-control" type="text" name="libro[ciudad]" value="<%= libro.ciudad %>" id="ciudadLibro" placeholder="Ciudad">
-            <input class="form-control" type="text" name="libro[editorial]" value="<%= libro.editorial %>" id="editorialLibro" placeholder="Editorial">
-            <input class="form-control" type="text" name="libro[img]" value="<%= libro.img %>" id="imgLibro" placeholder="Imagen">
-
-          
-            <!--Datos Autor-->
-            <div class="row">
-                <div class="col-4">
-                    <select class='form-control' name="authorID" onchange='paintAuthors(this)'>
-                        <option value='0'>Seleccione autores...</option>
-                        <% authors.forEach((item) => { %>
-                            <option value="<%= item._id %>">
-                                <%= item.authorName + ' ' + item.authorLastName %>
-                            </option>
-                        <% }); %>
-                    </select>
-                </div>
-                <div class="col-6">
-                    <div id="authors-selected">
-                            <% libro.authors.forEach((item) => { %>
-                                <span id='<%= item._id %>' style="border: 1px solid black; border-radius: 5px; padding: 5px;" onclick='deletePaintedAuthor(this)' data-authorid='<%= item._id %>'><%= item.authorName + ' ' + item.authorLastName %> x</span>
-                            <% }); %>
-                    </div>
+<div class="container" id='createBookForm' style="margin-top: 20px">
+    
+    <form action="/catalogo/<%= libro._id %>?_method=PUT" method="POST" id="">
+        <!-- Datos Libro -->
+        <input type="hidden" name="libro[id]" id="idLibro" value="<%= libro._id %>">
+        <dl class="row">
+            <dt class="col-2">ID Libro</dt>
+            <dd class="col-10">
+                <%= libro._id %>
+            </dd>
+            <dt class="col-2">Título</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[titulo]" value="<%= libro.titulo %>"
+                    id="tituloLibro" placeholder="Titulo"></dd>
+            <dt class="col-2">Subtítulo</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[subtitulo]" value="<%= libro.subtitulo %>"
+                    id="subtituloLibro" placeholder="Subtitulo"></dd>
+            <dt class="col-2">Año Publicacion</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[anioPublicacion]" value="<%= libro.anioPublicacion %>"
+                    id="anioPublicacionLibro" placeholder="Año Publicacion"></dd>
+            <dt class="col-2">País</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[pais]" value="<%= libro.pais %>" id="paisLibro"
+                    placeholder="Pais"></dd>
+            <dt class="col-2">Ciudad</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[ciudad]" value="<%= libro.ciudad %>"
+                    id="ciudadLibro" placeholder="Ciudad"></dd>
+            <dt class="col-2">Editorial</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[editorial]" value="<%= libro.editorial %>"
+                    id="editorialLibro" placeholder="Editorial"></dd>
+            <dt class="col-2">Imagen</dt>
+            <dd class="col-4"><input class="form-control" type="text" name="libro[img]" value="<%= libro.img %>" id="imgLibro"
+                    placeholder="Imagen"></dd>
+            <dt class="col-2">Autor(es)</dt>
+            <dd class="col-4">
+                <select class='form-control' name="authorID" onchange='paintAuthors(this)'>
+                    <option value='0'>Seleccione autores...</option>
+                    <% authors.forEach((item) => { %>
+                    <option value="<%= item._id %>">
+                        <%= item.authorName + ' ' + item.authorLastName %>
+                    </option>
+                    <% }); %>
+                </select>
+            </dd>
+            <div class="col-12 edit-book-author" >
+                <div id="authors-selected" style="margin-top: 23px">
+                    <% libro.authors.forEach((item) => { %>
+                    <span style="margin-left: 5px; margin-right: 5px" class="authors-buble" id='<%= item._id %>'
+                        onclick='deletePaintedAuthor(this)' data-authorid='<%= item._id %>'>
+                        <%= item.authorName + ' ' + item.authorLastName %> x
+                    </span>
+                    <% }); %>
                 </div>
             </div>
-            <!-- Datos libreria -->
-            <input class="form-control" type="text" name="libro[descripcion]" value="<%= libro.descripcion %>" id="descripcionLibro"
-                placeholder="Descripción">
-            <input class="form-control" type="text"     name="libro[stock]"     value="<%= libro.stock %>" id="stockLibro" placeholder="stock">
-            
-            <input class="form-control" type="text"     name="libro[categoria]" value="<%= libro.categoria %>" id="categoriaLibro" placeholder="Categoria">
-            <input class="form-control" type="text"     name="libro[temas]"     value="<%= libro.temas %>" id="temasLibro" placeholder="Temas">
-            <input class="form-control" type="text"     name="libro[keywords]"  value="<%= libro.keywords %>" id="keywordsLibro" placeholder="Keywords">
-            <input class="form-control" type="number"   name="libro[precio]"    value="<%= libro.precio %>" id="precioLibro" placeholder="Precio" >
-            <table class='table'>
-                <thead>
-                    <tr>
-                        <th>¿Es nuevo?</th>
-                        <th>¿Destacado?</th>
-                        <th>¿Oferta?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input class="form-control" type="checkbox"     name="libro[nuevo]"      <%= libro.nuevo ? 'checked' : '' %> id="nuevoLibro"></td>
-                        <td><input class="form-control" type="checkbox"     name="libro[destacado]"  <%= libro.destacado ? 'checked' : '' %> id="destacadoLibro" ></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            
-            <input type="submit" class='btn btn-success' value="Actualizar Registro">
-        </form>
-    </div>
+            <dt class="col-2">Descripción</dt>
+            <dd class="col-12"><textarea class="form-control" type="text" name="libro[descripcion]" text="<%= libro.descripcion %>" id="descripcionLibro"
+            placeholder="Descripción"  rows="6"><%= libro.descripcion %></textarea></dd>
+            <dt class="col-1">Categoria</dt>
+            <dd class="col-5"><input class="form-control" type="text" name="libro[categoria]" value="<%= libro.categoria %>" id="categoriaLibro"
+            placeholder="Categoria"></dd>
+            <dt class="col-1">Temas</dt>
+            <dd class="col-5"><input class="form-control" type="text" name="libro[temas]" value="<%= libro.temas %>" id="temasLibro"
+            placeholder="Temas"></dd>
+            <dt class="col-1">Keywords</dt>
+            <dd class="col-5"><input class="form-control" type="text" name="libro[keywords]" value="<%= libro.keywords %>" id="keywordsLibro"
+            placeholder="Keywords"></dd>
+            <dt class="col-1">Stock</dt>
+            <dd class="col-1"><input class="form-control text-center" type="text" name="libro[stock]" value="<%= libro.stock %>" id="stockLibro"
+            placeholder="stock"></dd>
+            <dt class="col-2">Precio</dt>
+            <dd class="col-2"><input class="form-control text-center" type="number" name="libro[precio]" value="<%= libro.precio %>" id="precioLibro"
+            placeholder="Precio"></dd>
+            <dd class="col-8"></dd>
+            <dt class="col-2">Precio Oferta</dt>
+            <dd class="col-2"><input class="form-control text-center" type="number" name="libro[precioOferta]" value="<%= libro.precioOferta %>" id="precioOfertaLibro"
+            placeholder="Precio"></dd>
+        </dl>       
+        
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>¿Es nuevo?</th>
+                    <th>¿Destacado?</th>
+                    <th>¿Oferta?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input class="form-control" type="checkbox" name="libro[nuevo]" <%=libro.nuevo ? 'checked' : ''
+                            %> id="nuevoLibro"></td>
+                    <td><input class="form-control" type="checkbox" name="libro[destacado]" <%=libro.destacado ?
+                            'checked' : '' %> id="destacadoLibro" ></td>
+                    <td><input class="form-control" type="checkbox" name="libro[oferta]" <%=libro.oferta ?
+                    'checked' : '' %> id="ofertaLibro" ></td>
+                </tr>
+            </tbody>
+        </table>
 
-    <script src="/js/catalogo.js"></script>
-    <% include ../partials/footer %>
+
+        <input type="submit" class='btn btn-success' value="Actualizar Registro">
+    </form>
+</div>
+
+<script src="/js/catalogo.js"></script>
+<% include ../partials/footer %>

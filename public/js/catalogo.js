@@ -3,8 +3,8 @@
 var paintAuthors = (e) => {
     if (e.value !== '0') {
         document.getElementById('authors-selected').innerHTML +=
-            `<span id='${e.value}' class='authors-buble col-6' onclick='deletePaintedAuthor(this)' 
-        data-authorid='${e.value}'>${e.options[e.selectedIndex].text} x</span><br>`;
+            `<span id='${e.value}' style="margin-left: 5px; margin-right: 5px" class='authors-buble' onclick='deletePaintedAuthor(this)' 
+        data-authorid='${e.value}'>${e.options[e.selectedIndex].text} x </span>`;
     }
 
 }
@@ -58,7 +58,9 @@ var createBook = (auths) => {
             temas: document.getElementById('temasLibro').value,
             keywords: document.getElementById('keywordsLibro').value,
             precio: document.getElementById('precioLibro').value,
-            destacado: document.getElementById('destacadoLibro').checked ? true : false
+            precioOferta: document.getElementById('precioOfertaLibro').value,
+            destacado: document.getElementById('destacadoLibro').checked ? true : false,
+            oferta: document.getElementById('ofertaLibro').checked ? true : false
         }
 
         

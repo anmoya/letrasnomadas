@@ -20,24 +20,40 @@ let isLoggedIn = (req, res, next) => {
     res.send('no autorizado');
 };
 
-
-router.get('/catalogo', (req, res) => {
-    Libro.find({}).populate('authors').exec(function (err, allBooks) {
-        if (err)
-            console.log(`Error:\n${err}\n#####################`);
-        else {
-            res.render('catalogo/index', { libros: allBooks });
-        }
-    });
-});
-
 router.get('/catalogo/create', isLoggedIn, async (req, res) => {
     let allAuthors = await searchAllAuthors(); // Buscamos los autores
     res.render('catalogo/create', { authors: allAuthors }); // Enviamos a la vista
 });
 
+router.get('/catalogo/:page', (req, res) => {
+    const porPagina = 8;
+    let pagina = req.params.page || 1;
+
+    Libro
+        .find({})
+        .populate('authors')
+        .skip((porPagina * pagina) - porPagina)
+        .limit(porPagina)
+        .exec((err, allBooks) => {
+            if (err) return console.log(err);
+            Libro.count().exec((err, count) => {
+                if (err)
+                    console.log(err);
+                else
+                    res.render('catalogo/index', {
+                        libros  : allBooks,
+                        current : pagina,
+                        pages   : Math.ceil(count / porPagina)
+                    });
+            })
+
+        });
+});
 
 
+/*
+** Recibe libro por body y lo inserta en BD
+ */
 router.post('/catalogo/create', isLoggedIn, (req, res) => {
     console.log(req.body.authors);
     // Crea libro en base al request
@@ -62,17 +78,20 @@ router.post('/catalogo/create', isLoggedIn, (req, res) => {
         });
 });
 
-router.get('/catalogo/:id', function (req, res) {
-    Libro.findById(req.params.id).populate('comments').populate('authors').exec(function (err, foundedBook) {
+/*
+** Trae vista de libro por ID 
+*/
+router.get('/catalogo/show/:id', function (req, res) {
+    Libro.findById(req.params.id).populate('comments').populate('authors').populate('resenias').exec(function (err, foundedBook) {
         if (err) {
             console.log('No encontré libro con ese id.');
             console.log('#############################');
             console.log('EROR ' + err);
             console.log('#############################');
         } else {
-            // ############################
-            // BUSCA LIBROS DEL MISMO AUTOR
-            // ############################
+            /*
+            ** Busca libros relacionados primer autor del libro encontrado
+             */
             Libro.find(
                 {
                     _id: foundedBook.authors[0]
@@ -90,6 +109,7 @@ router.get('/catalogo/:id', function (req, res) {
     });
 });
 
+// Busca libro por ID por post
 router.post('/catalogo/buscalibroporid', (req, res) => {
     console.log('Llegaste');
     console.log(req.body.id);
@@ -105,8 +125,28 @@ router.post('/catalogo/buscalibroporid', (req, res) => {
 });
 
 
-router.put('/catalogo/:id/edit', async (req, res) => {
 
+/** Permite editar datos del libro
+ * Debe estar logueado
+ *  */
+router.get('/catalogo/:id/edit', async (req, res) => {
+    let authors = await searchAllAuthors();
+
+    Libro.findById(req.params.id).populate('authors').exec(function (err, foundedBook) {
+        if (err) {
+            console.log('No encontrè el libro.')
+            console.log(err);
+        } else {
+            res.render('./catalogo/edit', {
+                libro: foundedBook,
+                authors: authors
+            });
+        }
+    });
+});
+// Actualiza recurso por PUT
+router.put('/catalogo/:id/edit', isLoggedIn, async (req, res) => {
+    console.log(req.body);
     var id = req.params.id;
     let book = createBookObject(req.body);
 
@@ -134,6 +174,10 @@ router.put('/catalogo/:id/edit', async (req, res) => {
         });
 });
 
+/**
+ * Delete libro
+ * Debe estar logueado
+ */
 router.delete('/catalogo/:id', isLoggedIn, (req, res) => {
     Libro.findByIdAndRemove(req.params.id, function (err, deletedBook) {
         if (err) {
@@ -144,24 +188,6 @@ router.delete('/catalogo/:id', isLoggedIn, (req, res) => {
     });
 });
 
-// EDIT
-router.get('/catalogo/:id/edit', async (req, res) => {
-    let authors = await searchAllAuthors();
-
-    Libro.findById(req.params.id).populate('authors').exec(function (err, foundedBook) {
-        if (err) {
-            console.log('No encontrè el libro.')
-            console.log(err);
-        } else {
-            res.render('./catalogo/edit', {
-                libro: foundedBook,
-                authors: authors
-            });
-        }
-    });
-});
-
-
 /**
  * Métodos 
  */
@@ -169,8 +195,8 @@ router.get('/catalogo/:id/edit', async (req, res) => {
 // BUSCA TODOS LOS AUTORES
 let searchAllAuthors = async () => {
     let autores = await Author.find({}, (err, allFoundedAuthors) => {
-        if
-        (err) console.log(`Error: \n ${err}`);
+        if (err)
+            console.log(`Error: \n ${err}`);
         else
             return allFoundedAuthors;
     });
@@ -197,7 +223,9 @@ let createBookObject = (request) => {
         temas: request.temas,
         keywords: request.keywords,
         precio: request.precio,
-        destacado: request.destacado
+        precioOferta: request.precioOferta,
+        destacado: request.destacado,
+        oferta: request.oferta
     };
 
     return book;

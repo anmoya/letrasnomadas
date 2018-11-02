@@ -3,7 +3,16 @@ var router = express.Router();
 var Libro = require('../models/libro');
 var moment = require('moment');
 
-router.get('/adminpanel', (req, res) => {
+let isLoggedIn = (req, res, next) => {
+    // Si esta logueado, next
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    // si no, redirigimos
+    res.send('no autorizado');
+};
+
+router.get('/adminpanel', isLoggedIn, (req, res) => {
     res.render('adminpanel/index');
 });
 
