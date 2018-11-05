@@ -7,6 +7,7 @@ var _ = require('underscore');
 var data        = require('./data.json');
 let Libro = require('./models/libro');
 
+
 // require passport, passport-local (estrategia)
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
@@ -17,7 +18,8 @@ const indexRoutes           = require('./routes/index');
 const commentRoutes         = require('./routes/comment');
 const authorRoutes          = require('./routes/author');
 const adminRoutes           = require('./routes/admin');
-const categoriaRoutes           = require('./routes/categoria');
+const categoriaRoutes       = require('./routes/categoria');
+const utilitiesRoutes       = require('./routes/utilities');
 
 
 
@@ -62,6 +64,7 @@ app.use(commentRoutes);
 app.use(authorRoutes);
 app.use(adminRoutes);
 app.use(categoriaRoutes);
+app.use(utilitiesRoutes);
 
 
 

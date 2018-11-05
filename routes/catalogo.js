@@ -41,9 +41,9 @@ router.get('/catalogo/:page', (req, res) => {
                     console.log(err);
                 else
                     res.render('catalogo/index', {
-                        libros  : allBooks,
-                        current : pagina,
-                        pages   : Math.ceil(count / porPagina)
+                        libros: allBooks,
+                        current: pagina,
+                        pages: Math.ceil(count / porPagina)
                     });
             })
 
@@ -55,18 +55,8 @@ router.get('/catalogo/:page', (req, res) => {
 ** Recibe libro por body y lo inserta en BD
  */
 router.post('/catalogo/create', isLoggedIn, (req, res) => {
-    console.log(req.body.authors);
     // Crea libro en base al request
-    let book = createBookObject(req.body);
-
-    if (book.nuevo == 'on') {
-        book.nuevo = true;
-    } else {
-        book.nuevo = false;
-    }
-
-    console.log('##############');
-    console.log(book.destacado);
+    let book = createBookObject(req.body, 'create');
 
     book.save()
         .then(data => {
@@ -144,18 +134,12 @@ router.get('/catalogo/:id/edit', async (req, res) => {
         }
     });
 });
+
 // Actualiza recurso por PUT
 router.put('/catalogo/:id/edit', isLoggedIn, async (req, res) => {
     console.log(req.body);
     var id = req.params.id;
-    let book = createBookObject(req.body);
-
-
-    if (book.nuevo == 'on') {
-        book.nuevo = true;
-    } else {
-        book.nuevo = false;
-    }
+    let book = createBookObject(req.body, 'edit');
 
     await Libro.findByIdAndUpdate(id, book, async (err, updatedBook) => {
         if (err) {
@@ -205,28 +189,54 @@ let searchAllAuthors = async () => {
 }
 
 // CREA OBJETO LIBRO
-let createBookObject = (request) => {
-    var book = {
-        titulo: request.tituloLibro,
-        subtitulo: request.subtituloLibro,
-        nuevo: request.nuevo,
-        anioPublicacion: request.anioPublicacion,
-        pais: request.pais,
-        ciudad: request.ciudad,
-        editorial: request.editorial,
-        img: request.img,
-        authors: request.authors,
-        descripcion: request.descripcion,
-        stock: request.stock,
-        nuevo: request.nuevo,
-        categoria: request.categoria,
-        temas: request.temas,
-        keywords: request.keywords,
-        precio: request.precio,
-        precioOferta: request.precioOferta,
-        destacado: request.destacado,
-        oferta: request.oferta
-    };
+let createBookObject = (request, method) => {
+    if (method === 'create') {
+        var book = new Libro({
+            titulo: request.tituloLibro,
+            subtitulo: request.subtituloLibro,
+            nuevo: request.nuevo,
+            anioPublicacion: request.anioPublicacion,
+            pais: request.pais,
+            ciudad: request.ciudad,
+            editorial: request.editorial,
+            img: request.img,
+            authors: request.authors,
+            descripcion: request.descripcion,
+            stock: request.stock,
+            nuevo: request.nuevo,
+            categoria: request.categoria,
+            temas: request.temas,
+            keywords: request.keywords,
+            precio: request.precio,
+            precioOferta: request.precioOferta,
+            destacado: request.destacado,
+            oferta: request.oferta
+        });
+    }
+    if (method === 'edit') {
+        var book = {
+            titulo: request.tituloLibro,
+            subtitulo: request.subtituloLibro,
+            nuevo: request.nuevo,
+            anioPublicacion: request.anioPublicacion,
+            pais: request.pais,
+            ciudad: request.ciudad,
+            editorial: request.editorial,
+            img: request.img,
+            authors: request.authors,
+            descripcion: request.descripcion,
+            stock: request.stock,
+            nuevo: request.nuevo,
+            categoria: request.categoria,
+            temas: request.temas,
+            keywords: request.keywords,
+            precio: request.precio,
+            precioOferta: request.precioOferta,
+            destacado: request.destacado,
+            oferta: request.oferta
+        };
+    }
+
 
     return book;
 }

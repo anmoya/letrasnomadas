@@ -37,11 +37,16 @@ createForm.addEventListener('submit', (e) => {
     createBook(authorsArr);
 });
 
-var createBook = (auths) => {
+let createBook = (auths) => {
+    // Si autores < 1, no mandamos data
     if (auths.length < 1)
         alert('Debes elegir al menos un autor.');
     else {
-        var formData = {
+        /* Si pasa validaciones, creamos objeto data
+        ** determinamos si es post o put (crea o edita)
+        ** 
+        */
+        let formData = {
             tituloLibro: document.getElementById('tituloLibro').value,
             subtituloLibro: document.getElementById('subtituloLibro').value,
             nuevo: 'on',
@@ -53,7 +58,7 @@ var createBook = (auths) => {
             authors: auths,
             descripcion: document.getElementById('descripcionLibro').value,
             stock: document.getElementById('stockLibro').value,
-            nuevo: document.getElementById('nuevoLibro').value,
+            nuevo: document.getElementById('nuevoLibro').checked ? true : false,
             categoria: document.getElementById('categoriaLibro').value,
             temas: document.getElementById('temasLibro').value,
             keywords: document.getElementById('keywordsLibro').value,
@@ -63,11 +68,14 @@ var createBook = (auths) => {
             oferta: document.getElementById('ofertaLibro').checked ? true : false
         }
 
-        
-        var metodo = window.location.pathname == '/catalogo/create' ? 'POST' : 'PUT';
-        console.log(`Haré un post a ${window.location.pathname} por ${metodo}`);
+        let metodo = window.location.pathname == '/catalogo/create' ? 'post' : 'put';
+        console.log(`Haré un request a ${window.location.pathname} por ${metodo}`);
 
-        axios.put(window.location.pathname, formData)
+        axios({
+            method: metodo,
+            url: window.location.pathname, 
+            data: formData
+        })
         .then( res  => {
             alert(  `El libro ha sido actualizado correctamente.\n
                     Libro: ${res.data.titulo}
