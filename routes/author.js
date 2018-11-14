@@ -1,7 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var Author = require('../models/author');
-var moment = require('moment');
+const express = require('express');
+const router = express.Router();
+
+const moment = require('moment');
+const Libro  = require('../models/libro');
+const Author = require('../models/author');
 
 
 router.get('/author', (req, res) => {
@@ -68,6 +70,16 @@ router.put('/author/:id/edit', (req, res) => {
             res.redirect(`/author/${updatedAuthor._id}`);
         }
     });
+});
+
+// obtener los libros del autor.
+router.get('/author/:id/obtain', async ( req, res ) => {
+    let id = req.params.id;
+    let libros = await Libro.find({ authors: id}, ( err , foundedBooks ) => {
+        return foundedBooks;
+    });
+    console.log('###########################');
+    console.log(libros);
 });
 
 
