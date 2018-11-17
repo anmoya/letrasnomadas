@@ -30,7 +30,20 @@
     }
 
     async function generaFAQ(){
-        let data = await axios.post('/utilities/faq').then( response => response.data ).catch( err => err );
+        let data = await 
+            axios({
+                method  : 'post',
+                url     : '/utilities/faq',
+                data    : {
+                    type : 'faq'
+                }
+            })
+            .then(
+                response => {
+                    console.log(response);
+                    return response.data;
+                }
+            ).catch( err => err );
         let div = 
         `
             <div>

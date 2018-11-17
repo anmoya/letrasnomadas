@@ -8,11 +8,23 @@ router.get('/utilities/faq', ( req, res ) => {
 });
 
 router.post('/utilities/faq', ( req, res, ) => {
-    Utilities.find({}, ( req, res ) => {
-        
+    let type = req.body.type;
+    Utilities.find({ type: type.toUpperCase() }, ( err, foundedFAQ ) => {
+        if (err) return res.send(err);
+        res.send(foundedFAQ);
     });
 });
 
+router.post('/utilities/addfaq', (req, res) => {
+    console.log(req.body);
+    let faq = req.body.faq;
+    Utilities.create(faq, (err, createdFaq) => {
+        if (err) console.log(err)
+        else {
+            res.send("Faq creado.");
+        }
+    });
+});
 
 
 module.exports = router;
