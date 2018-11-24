@@ -29,39 +29,116 @@
 
     }
 
-    async function generaFAQ(){
-        let data = await 
-            axios({
-                method  : 'post',
-                url     : '/utilities/faq',
-                data    : {
-                    type : 'faq'
-                }
-            })
-            .then(
-                response => {
-                    return response.data;
-                }
-            ).catch( err => err );
+    async function generaFAQ() {
+        let data = await axios({
+            method: 'post',
+            url: '/utilities/faq',
+            data: {
+                type: 'faq'
+            }
+        }).then(response => response.data)
+            .catch(err => err);
 
-        
-        let div = `<div>${await pintaFaqjs(data)}</div>`;
+        console.log(data);
 
-        return div;
-    }
 
-    async function pintaFaqjs(faqs){
-        console.log(faqs);
-        let inputs = [];
-        faqs.forEach( item => {
-
-            h1 = h1 + item._id;
+        let faqs = data.map(item => {
+            return `
+                <div class="container">
+                    <div class="faq" id="faq${item.order}">
+                        <input class="form-control" type="text" value="${item.order}" />
+                        <input class="form-control" type="text" value="${item.title}" placeholder="Título" />
+                        <textarea rows="5" class="form-control">${item.text}</textarea>
+                    </div>
+                </div>
+            `;
         });
-        console.log(h1);
-        return h1;
+
+        faqs += `
+                <div class="container">
+                    <div class="faq" id="vacio">
+                        <input class="form-control" type="text" value="" id="vacio-order" />
+                        <input class="form-control" type="text" value="" id="vacio-titulo" placeholder="Título" />
+                        <textarea rows="5" class="form-control" id="vacio-texto"></textarea>
+                        <button id="crea-faq" class="btn btn-info" onclick="creaFaq()">Agregar</button>
+                    </div>
+                </div>
+            `;
+
+
+        return faqs;
+    }
+
+    async function creaFaq() {
+        debugger;
+        const order = document.getElementById("vacio-order");
+        const titulo = document.getElementById("vacio-titulo");
+        const texto = document.getElementById("vacio-texto");
+
+        function convertirASubtipo(str) {
+            const str2 = str.replace(/ /g, "-");
+            str2 = str.replace(/\?/g, "");
+            str2 = str.replace(/¿/g, "");
+            return str2;
+        }
+
+        const validacion = validaCampos(order, titulo, texto);
+        const isValido      = validacion.length === 0 ? true : false;
+
+
+        if (isValido) {
+            let faq = {
+                type: "FAQ",
+                title: titulo.value,
+                text: texto.value,
+                Subtype: convertirASubtipo(titulo.value),
+                order: order.value
+            }
+
+            const data = await axios({
+                method: 'post',
+                url: '/utilities/addFaq',
+                data: faq
+            }).then(response => response.data)
+            .catch(err => err);
+        } else {
+            let str = '';
+            alert("No valido");
+            validacion.forEach( item => {
+                str += item.campo + ' ' + item.motivo;
+            });
+            alert(str);
+        }
     }
 
 
+    function validaCampos(...args) {
+        
+        const [ order ] = [...args];
+        const arr       = [...args];
+
+        const elementosValidados = 
+            arr.filter( item => item.value === "")
+               .map   ( obj => {
+                    let auxObj = {};
+                    let extraeId = obj.id.substr(6);
+                    auxObj["campo"] = extraeId;
+                    auxObj["motivo"] = "vacio";
+                    return auxObj;
+        }).filter( item => item.value.length < 2)
+        .map   ( obj => {
+                    let auxObj = {};
+                    let extraeId = obj.id.substr(6);
+                    auxObj["campo"] = extraeId;
+                    auxObj["motivo"] = "no cumple largo";
+                    return auxObj;
+        })
+
+        if (isNaN(order.value))
+            elementosValidados.push({ "order": "NaN", "motivo": "NaN" });
+
+        return elementosValidados;
+    }
 </script>
 
 
