@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Libro     = require('../models/libro');
 const Resena    = require('../models/resena');
+const Utilities = require('../models/utilities');
 
 
 router.get('/', function(req, res){
@@ -16,8 +17,15 @@ router.get('/mediosentrega', ( req, res ) => {
     res.render('index/entrega');
 });
 
-router.get('/faq', ( req, res ) => {
-    res.render('index/faq');
+router.get('/faq', async ( req, res ) => {
+    const faqs = await Utilities.find({ type: 'FAQ'}, (err, foundedFAQs) => {
+        if (err)
+            console.log(err);
+        else 
+            return foundedFAQs;
+    });
+
+    res.render('index/faq', { faqs : faqs });
 });
 
 router.post('/index/libroporid', async (req, res) => {

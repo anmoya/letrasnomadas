@@ -70,9 +70,9 @@
     }
 
     async function creaFaq() {
-        const order = document.getElementById("vacio-order");
+        const order  = document.getElementById("vacio-order");
         const titulo = document.getElementById("vacio-titulo");
-        const texto = document.getElementById("vacio-texto");
+        const texto  = document.getElementById("vacio-texto");
 
         function convertirASubtipo(str) {
             let str2 = str.replace(/ /g, "-");
@@ -82,7 +82,7 @@
         }
 
         const validacion = validaCampos(order, titulo, texto);
-        const isValido      = validacion.length === 0 ? true : false;
+        const isValido   = validacion.length === 0 ? true : false;
 
 
         if (isValido) {
@@ -98,7 +98,8 @@
                 method: 'post',
                 url: '/utilities/addFaq',
                 data: faq
-            }).then(response => response.data)
+            })
+            .then(response => alert(response.data.estado))
             .catch(err => err);
         } else {
             let str = '';
@@ -106,8 +107,10 @@
             validacion.forEach( item => {
                 str += item.campo + ' ' + item.motivo + '\n';
             });
-            alert(str);
+
         }
+
+        alert(data.estado);
     }
 
 
