@@ -70,7 +70,6 @@
     }
 
     async function creaFaq() {
-        debugger;
         const order = document.getElementById("vacio-order");
         const titulo = document.getElementById("vacio-titulo");
         const texto = document.getElementById("vacio-texto");
@@ -105,7 +104,7 @@
             let str = '';
             alert("No valido");
             validacion.forEach( item => {
-                str += item.campo + ' ' + item.motivo;
+                str += item.campo + ' ' + item.motivo + '\n';
             });
             alert(str);
         }
@@ -114,7 +113,7 @@
 
     function validaCampos(...args) {
         
-        const [ order ] = [...args];
+        const [ order, titulo, texto ] = [...args];
         const arr       = [...args];
 
         const elementosValidados = 
@@ -125,17 +124,18 @@
                     auxObj["campo"] = extraeId;
                     auxObj["motivo"] = "vacio";
                     return auxObj;
-        }).filter( item => item.value.length < 2)
-        .map   ( obj => {
-                    let auxObj = {};
-                    let extraeId = obj.id.substr(6);
-                    auxObj["campo"] = extraeId;
-                    auxObj["motivo"] = "no cumple largo";
-                    return auxObj;
-        })
+        });
 
         if (isNaN(order.value))
-            elementosValidados.push({ "order": "NaN", "motivo": "NaN" });
+            elementosValidados.push({ "campo": "orden", "motivo": "No es un número." });
+
+        if (titulo.value.length < 5)
+            elementosValidados.push({ "campo": "titulo", "motivo": "No cumple largo: 5." });
+        if (texto.value.length < 25)
+            elementosValidados.push({ "campo": "texto", "motivo": "No cumple largo: 25." });
+        if (order < 0)
+            elementosValidados.push({ "campo": "orden", "motivo": "No cumple largo minimo: 1." });
+
 
         return elementosValidados;
     }

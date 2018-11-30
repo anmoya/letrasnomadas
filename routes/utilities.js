@@ -16,6 +16,7 @@ router.post('/utilities/faq', ( req, res, ) => {
 });
 
 router.post('/utilities/addfaq', (req, res) => {
+    debugger;
     console.log(req.body);
     let faq = req.body.faq;
     Utilities.create(faq, (err, createdFaq) => {
