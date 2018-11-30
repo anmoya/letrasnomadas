@@ -75,7 +75,7 @@
         const texto = document.getElementById("vacio-texto");
 
         function convertirASubtipo(str) {
-            const str2 = str.replace(/ /g, "-");
+            let str2 = str.replace(/ /g, "-");
             str2 = str.replace(/\?/g, "");
             str2 = str.replace(/¿/g, "");
             return str2;
@@ -116,7 +116,7 @@
         const [ order, titulo, texto ] = [...args];
         const arr       = [...args];
 
-        const elementosValidados = 
+        let elementosValidados = 
             arr.filter( item => item.value === "")
                .map   ( obj => {
                     let auxObj = {};

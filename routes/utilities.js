@@ -16,12 +16,20 @@ router.post('/utilities/faq', ( req, res, ) => {
 });
 
 router.post('/utilities/addfaq', (req, res) => {
-    debugger;
-    console.log(req.body);
-    let faq = req.body.faq;
+    let bodyfaq = req.body.faq;
+    let faq = new Utilities({
+        type: bodyfaq.type,
+        title: bodyfaq.title,
+        text: bodyfaq.text,
+        Subtype: bodyfaq.Subtype,
+        order: bodyfaq.order
+    });
+
     Utilities.create(faq, (err, createdFaq) => {
-        if (err) console.log(err)
+        if (err) 
+            console.log(err)
         else {
+            console.log("Enviando respuesta.");
             res.send("Faq creado.");
         }
     });
