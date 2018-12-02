@@ -248,3 +248,185 @@ function getAllUrlParams(url) {
 
     return obj;
 }
+
+
+/* ############################# */   /*
+*   MANTENEDOR FAQ
+*/
+
+    async function pintaFAQ() {
+        zone.innerHTML = '';
+
+        zone.innerHTML = await generaFAQ();
+
+    }
+
+    async function generaFAQ() {
+        let data = await axios.get('/utilities/faq')
+            .then(response => {
+                // Copiamos response (Array) y lo ordenamos por order property.
+                let sorted = response.data;
+                sorted.sort(function (a, b) {
+                    if (a["order"] === b["order"]) // si son iguales, ordenamos alfabéticamente
+                        return a["title"] - b["title"];
+                    else
+                        return a["order"] - b["order"];
+                });
+                return sorted;
+            }).catch(err => err);
+        
+            
+        
+            
+        let faqs = data.map(item => {
+            return `<div class="container">
+                        <div class="faq" id="faq${item._id}">
+                            <input    id="order-${item._id}" class="form-control" type="text" value="${item.order}" />
+                            <input    id="title-${item._id}" class="form-control" type="text" value="${item.title}" placeholder="Título" />
+                            <textarea id="text-${item._id}" rows="5" class="form-control">${item.text}</textarea>
+                            <button class="btn btn-warning" onclick="updateFAQ('${item._id}')">Actualizar</button>
+                            <button class="btn btn-danger" onclick="deleteFAQ('${item._id}')">Borrar</button>
+                        </div>
+                    </div>`;
+        }).join(''); // join('') evita una coma que genera el map
+
+        faqs += `
+            <div class="container" id="FAQ-create">
+                <div class="faq" id="vacio">
+                    <input class="form-control" type="text" value="" id="vacio-order" />
+                    <input class="form-control" type="text" value="" id="vacio-titulo" placeholder="Título" />
+                    <textarea rows="5" class="form-control" id="vacio-texto"></textarea>
+                    <button id="crea-faq" class="btn btn-info" onclick="creaFaq()">Agregar</button>
+                </div>
+            </div>
+        `;
+
+
+        return faqs;
+    }
+
+    async function creaFaq() {
+        const order = document.getElementById("vacio-order");
+        const titulo = document.getElementById("vacio-titulo");
+        const texto = document.getElementById("vacio-texto");
+
+        function convertirASubtipo(str) {
+            let str2 = str.replace(/ /g, "-");
+            str2 = str.replace(/\?/g, "");
+            str2 = str.replace(/¿/g, "");
+            return str2;
+        }
+
+        const validacion = validaCampos(order, titulo, texto);
+        const isValido = validacion.length === 0 ? true : false;
+        let data;
+
+        if (isValido) {
+            let sendUti = {
+                type: "FAQ",
+                title: titulo.value,
+                text: texto.value,
+                Subtype: convertirASubtipo(titulo.value),
+                order: order.value
+            }
+
+            data = await axios({
+                method: 'POST',
+                url: '/utilities',
+                data: {
+                    utilidad: sendUti
+                }
+            })
+            .then(response => response.data)
+            .catch(err => err);
+        } else {
+            let str = '';
+            alert("No valido");
+            validacion.forEach(item => {
+                str += item.campo + ' ' + item.motivo + '\n';
+            });
+
+        }
+
+        alert(data.message);
+        pintaFAQ();
+    }
+
+
+    function validaCampos(...args) {
+
+        const [order, titulo, texto] = [...args];
+        const arr = [...args];
+
+        let elementosValidados =
+            arr.filter(item => item.value === "")
+                .map(obj => {
+                    let auxObj = {};
+                    let extraeId = obj.id.substr(6);
+                    auxObj["campo"] = extraeId;
+                    auxObj["motivo"] = "vacio";
+                    return auxObj;
+                });
+
+        if (isNaN(order.value))
+            elementosValidados.push({ "campo": "orden", "motivo": "No es un número." });
+
+        if (titulo.value.length < 5)
+            elementosValidados.push({ "campo": "titulo", "motivo": "No cumple largo: 5." });
+        if (texto.value.length < 25)
+            elementosValidados.push({ "campo": "texto", "motivo": "No cumple largo: 25." });
+        if (order < 0)
+            elementosValidados.push({ "campo": "orden", "motivo": "No cumple largo minimo: 1." });
+
+
+        return elementosValidados;
+    }
+
+    async function updateFAQ(dato) {
+        const titulo = document.getElementById("title-" + dato);
+        const order = document.getElementById("order-" + dato);
+        const texto = document.getElementById("text-" + dato);
+
+        const faq = {
+            title: titulo.value,
+            text: texto.value,
+            order: order.value
+        }
+
+        const data = await axios({
+            method: 'put',
+            url: '/utilities',
+            data: {
+                id: dato,
+                utilidad: faq
+            }
+        })
+            .then(response => response.data)
+            .catch(err => err);
+
+        alert(data.message);
+
+
+    }
+
+    async function deleteFAQ(dato) {
+        const faqDIV = document.getElementById('faq' + dato);
+
+        const data = await axios({
+            method: 'delete',
+            url: '/utilities',
+            data: {
+                id: dato
+            }
+        })
+            .then(response => response.data)
+            .catch(err => err);
+
+        if (data.status === "OK")
+            faqDIV.style.display = "none";
+        if (data.code === "Error")
+            console.log(data.obj);
+
+        alert(data.message);
+    }
+

@@ -14,18 +14,37 @@ router.get('/quienessomos', (req, res) => {
 });
 
 router.get('/mediosentrega', ( req, res ) => {
-    res.render('index/entrega');
-});
-
-router.get('/faq', async ( req, res ) => {
-    const faqs = await Utilities.find({ type: 'FAQ'}, (err, foundedFAQs) => {
+    Utilities.find({ type: 'ME' }, ( err, foundedUti ) => {
         if (err)
             console.log(err);
-        else 
-            return foundedFAQs;
+        else{
+            console.log(foundedUti);
+            res.render('index/entrega', {
+                fME: foundedUti
+            });
+        }
+        
+    });
+    
+});
+
+router.get('/faq', ( req, res ) => {
+    Utilities.find({ type: 'FAQ'}, (err, foundedFAQs) => {
+        if (err)
+            console.log(err);
+        else {
+            let sorted = foundedFAQs;
+            sorted.sort(function(a, b) {
+                if (a["order"] === b["order"])
+                    return a["title"] - b["title"];
+                else
+                    return a["order"] - b["order"];
+            });
+            res.render('index/faq', { faqs : sorted });
+        }
     });
 
-    res.render('index/faq', { faqs : faqs });
+    
 });
 
 router.post('/index/libroporid', async (req, res) => {

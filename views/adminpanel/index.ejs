@@ -9,6 +9,7 @@
             <button class='btn adminpanel-buttons btn-info' onclick='pintaLibros()'>Libros</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaResena()'>Reseñas</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaFAQ()'>FAQ</button>
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaMediosEntrega()'>M Entrega</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaGeneric()'>asdf</button>
         </div>
         <div class="col-11">
@@ -23,127 +24,107 @@
 <script src="/js/panel.js"></script>
 <script>
     var zone = document.getElementById('admin-functionpainted-zone');
-    async function pintaFAQ() {
+    /* ############################ */
+    /* METODOS PARA MEDIOS ENTREGA  */
+    
+
+    async function pintaMediosEntrega() {
         zone.innerHTML = '';
-        zone.innerHTML = await generaFAQ();
-
+        zone.innerHTML = await generaMediosEntrega();
     }
 
-    async function generaFAQ() {
-        let data = await axios({
-            method: 'post',
-            url: '/utilities/faq',
-            data: {
-                type: 'faq'
-            }
-        }).then(response => response.data)
-            .catch(err => err);
+    async function generaMediosEntrega() {
+        const titulo = document.getElementById('ME-titulo');
+        const texto = document.getElementById('ME-texto');
+        const bDelete = document.getElementById('ME-delete');
+        const bActualizar = document.getElementById('ME-actualizar');
 
-        console.log(data);
+        const meCount = await axios.get('/utilities/me')
+            .then(response => response.data)
+            .catch(err => console.log(err));
 
+        const id = meCount.length > 0 ? meCount[0]._id : 0;
 
-        let faqs = data.map(item => {
-            return `
+        const putView = `
+                <h1>Medios de Entrega</h1>
                 <div class="container">
-                    <div class="faq" id="faq${item.order}">
-                        <input class="form-control" type="text" value="${item.order}" />
-                        <input class="form-control" type="text" value="${item.title}" placeholder="Título" />
-                        <textarea rows="5" class="form-control">${item.text}</textarea>
-                    </div>
-                </div>
-            `;
-        });
+                    <input    class="form-control" id="ME-titulo" type="text" placeholder="Título" value="${meCount.length > 0 ? meCount[0].title : ""}"/>
+                    <textarea class="form-control" id="ME-texto"  rows="5"    placeholder="Cuerpo página">${meCount.length > 0 ? meCount[0].text : ""}</textarea>
+                    <button   class="btn btn-info" id="ME-actualizar" onclick="enviaMedioEntrega('${id}')">${meCount.length > 0 ? "Actualizar" : "Crear"}</button>
+                    <button class="btn btn-danger" id="ME-delete" onclick="deleteMedioEntrega('${id}')" ${id === 0 ? "disabled" : ""}>Borrar</button>
+                </div>`;
 
-        faqs += `
-                <div class="container">
-                    <div class="faq" id="vacio">
-                        <input class="form-control" type="text" value="" id="vacio-order" />
-                        <input class="form-control" type="text" value="" id="vacio-titulo" placeholder="Título" />
-                        <textarea rows="5" class="form-control" id="vacio-texto"></textarea>
-                        <button id="crea-faq" class="btn btn-info" onclick="creaFaq()">Agregar</button>
-                    </div>
-                </div>
-            `;
-
-
-        return faqs;
+        return putView;
     }
 
-    async function creaFaq() {
-        const order  = document.getElementById("vacio-order");
-        const titulo = document.getElementById("vacio-titulo");
-        const texto  = document.getElementById("vacio-texto");
+    async function enviaMedioEntrega(id) {
+        const titulo = document.getElementById('ME-titulo');
+        const texto = document.getElementById('ME-texto');
+        const bDelete = document.getElementById('ME-delete');
+        const bActualizar = document.getElementById('ME-actualizar');
+        const m = (id == 0) ? "post" : "put";
+        
 
-        function convertirASubtipo(str) {
-            let str2 = str.replace(/ /g, "-");
-            str2 = str.replace(/\?/g, "");
-            str2 = str.replace(/¿/g, "");
-            return str2;
-        }
-
-        const validacion = validaCampos(order, titulo, texto);
-        const isValido   = validacion.length === 0 ? true : false;
-
-
-        if (isValido) {
-            let faq = {
-                type: "FAQ",
+        if (titulo.value.length > 10 && titulo.value.length > 20) {
+            const me = {
                 title: titulo.value,
                 text: texto.value,
-                Subtype: convertirASubtipo(titulo.value),
-                order: order.value
+                order: 0,
+                type: 'ME',
+                Subtype: ''
             }
 
-            const data = await axios({
-                method: 'post',
-                url: '/utilities/addFaq',
-                data: faq
-            })
-            .then(response => alert(response.data.estado))
-            .catch(err => err);
-        } else {
-            let str = '';
-            alert("No valido");
-            validacion.forEach( item => {
-                str += item.campo + ' ' + item.motivo + '\n';
-            });
+            const retorno = await axios({
+                method: m,
+                url: '/utilities',
+                data: {
+                    id: id,
+                    utilidad: me
+            }})
+            .then( response => response.data )
+            .catch(err => console.log(err));
 
+            alert(retorno.message);
+            bDelete.removeAttribute('disabled','disabled');
+            bActualizar.setAttribute('disabled', 'disabled');
+
+
+
+
+
+        } else {
+            alert("Título debe tener mas de 10 carácteres y cuerpo debe tener mas de 20");
         }
 
-        alert(data.estado);
+
+
+
     }
 
-
-    function validaCampos(...args) {
+    async function deleteMedioEntrega(id) {
         
-        const [ order, titulo, texto ] = [...args];
-        const arr       = [...args];
 
-        let elementosValidados = 
-            arr.filter( item => item.value === "")
-               .map   ( obj => {
-                    let auxObj = {};
-                    let extraeId = obj.id.substr(6);
-                    auxObj["campo"] = extraeId;
-                    auxObj["motivo"] = "vacio";
-                    return auxObj;
-        });
+        const retorno = await axios({
+            method: 'delete',
+            url: '/utilities',
+            data: {
+                id: id
+            }
+        })
+        .then( response => response.data )
+        .catch( err => console.log(err));
 
-        if (isNaN(order.value))
-            elementosValidados.push({ "campo": "orden", "motivo": "No es un número." });
+        alert(retorno.message);
+        titulo.value = '';
+        texto.value = '';
+        bDelete.setAttribute('disabled','disabled');
+        bActualizar.removeAttribute('disabled','disabled');
+        
 
-        if (titulo.value.length < 5)
-            elementosValidados.push({ "campo": "titulo", "motivo": "No cumple largo: 5." });
-        if (texto.value.length < 25)
-            elementosValidados.push({ "campo": "texto", "motivo": "No cumple largo: 25." });
-        if (order < 0)
-            elementosValidados.push({ "campo": "orden", "motivo": "No cumple largo minimo: 1." });
-
-
-        return elementosValidados;
     }
-</script>
 
+
+</script>
 
 
 <% include ../partials/footer %>
