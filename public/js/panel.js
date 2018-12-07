@@ -430,3 +430,101 @@ function getAllUrlParams(url) {
         alert(data.message);
     }
 
+/* ############################ */
+    /* METODOS PARA MEDIOS ENTREGA  */
+    
+
+    async function pintaMediosEntrega() {
+        zone.innerHTML = '';
+        zone.innerHTML = await generaMediosEntrega();
+    }
+
+    async function generaMediosEntrega() {
+        const titulo = document.getElementById('ME-titulo');
+        const texto = document.getElementById('ME-texto');
+        const bDelete = document.getElementById('ME-delete');
+        const bActualizar = document.getElementById('ME-actualizar');
+
+        const meCount = await axios.get('/utilities/me')
+            .then(response => response.data)
+            .catch(err => console.log(err));
+
+        const id = meCount.length > 0 ? meCount[0]._id : 0;
+
+        const putView = `
+                <h1>Medios de Entrega</h1>
+                <div class="container">
+                    <input    class="form-control" id="ME-titulo" type="text" placeholder="Título" value="${meCount.length > 0 ? meCount[0].title : ""}"/>
+                    <textarea class="form-control" id="ME-texto"  rows="5"    placeholder="Cuerpo página">${meCount.length > 0 ? meCount[0].text : ""}</textarea>
+                    <button   class="btn btn-info" id="ME-actualizar" onclick="enviaMedioEntrega('${id}')">${meCount.length > 0 ? "Actualizar" : "Crear"}</button>
+                    <button class="btn btn-danger" id="ME-delete" onclick="deleteMedioEntrega('${id}')" ${id === 0 ? "disabled" : ""}>Borrar</button>
+                </div>`;
+
+        return putView;
+    }
+
+    async function enviaMedioEntrega(id) {
+        const titulo = document.getElementById('ME-titulo');
+        const texto = document.getElementById('ME-texto');
+        const bDelete = document.getElementById('ME-delete');
+        const bActualizar = document.getElementById('ME-actualizar');
+        const m = (id == 0) ? "post" : "put";
+        
+
+        if (titulo.value.length > 10 && titulo.value.length > 20) {
+            const me = {
+                title: titulo.value,
+                text: texto.value,
+                order: 0,
+                type: 'ME',
+                Subtype: ''
+            }
+
+            const retorno = await axios({
+                method: m,
+                url: '/utilities',
+                data: {
+                    id: id,
+                    utilidad: me
+            }})
+            .then( response => response.data )
+            .catch(err => console.log(err));
+
+            alert(retorno.message);
+            bDelete.removeAttribute('disabled','disabled');
+            bActualizar.setAttribute('disabled', 'disabled');
+
+
+
+
+
+        } else {
+            alert("Título debe tener mas de 10 carácteres y cuerpo debe tener mas de 20");
+        }
+
+
+
+
+    }
+
+    async function deleteMedioEntrega(id) {
+        
+
+        const retorno = await axios({
+            method: 'delete',
+            url: '/utilities',
+            data: {
+                id: id
+            }
+        })
+        .then( response => response.data )
+        .catch( err => console.log(err));
+
+        alert(retorno.message);
+        titulo.value = '';
+        texto.value = '';
+        bDelete.setAttribute('disabled','disabled');
+        bActualizar.removeAttribute('disabled','disabled');
+        
+
+    }

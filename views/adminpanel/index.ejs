@@ -10,6 +10,7 @@
             <button class='btn adminpanel-buttons btn-info' onclick='pintaResena()'>Reseñas</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaFAQ()'>FAQ</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaMediosEntrega()'>M Entrega</button>
+            <button class='btn adminpanel-buttons btn-info' onclick='pintaQSomos()'>Q Somos</button>
             <button class='btn adminpanel-buttons btn-info' onclick='pintaGeneric()'>asdf</button>
         </div>
         <div class="col-11">
@@ -24,22 +25,19 @@
 <script src="/js/panel.js"></script>
 <script>
     var zone = document.getElementById('admin-functionpainted-zone');
-    /* ############################ */
-    /* METODOS PARA MEDIOS ENTREGA  */
     
-
-    async function pintaMediosEntrega() {
+    async function pintaQSomos() {
         zone.innerHTML = '';
-        zone.innerHTML = await generaMediosEntrega();
+        zone.innerHTML = await generaQSomos();
     }
 
-    async function generaMediosEntrega() {
-        const titulo = document.getElementById('ME-titulo');
-        const texto = document.getElementById('ME-texto');
-        const bDelete = document.getElementById('ME-delete');
-        const bActualizar = document.getElementById('ME-actualizar');
+    async function generaQSomos() {
+        const titulo = document.getElementById('QS-titulo');
+        const texto = document.getElementById('QS-texto');
+        const bDelete = document.getElementById('QS-delete');
+        const bActualizar = document.getElementById('QS-actualizar');
 
-        const meCount = await axios.get('/utilities/me')
+        const meCount = await axios.get('/utilities/qs')
             .then(response => response.data)
             .catch(err => console.log(err));
 
@@ -48,29 +46,29 @@
         const putView = `
                 <h1>Medios de Entrega</h1>
                 <div class="container">
-                    <input    class="form-control" id="ME-titulo" type="text" placeholder="Título" value="${meCount.length > 0 ? meCount[0].title : ""}"/>
-                    <textarea class="form-control" id="ME-texto"  rows="5"    placeholder="Cuerpo página">${meCount.length > 0 ? meCount[0].text : ""}</textarea>
-                    <button   class="btn btn-info" id="ME-actualizar" onclick="enviaMedioEntrega('${id}')">${meCount.length > 0 ? "Actualizar" : "Crear"}</button>
-                    <button class="btn btn-danger" id="ME-delete" onclick="deleteMedioEntrega('${id}')" ${id === 0 ? "disabled" : ""}>Borrar</button>
+                    <input    class="form-control" id="QS-titulo" type="text" placeholder="Título" value="${meCount.length > 0 ? meCount[0].title : ""}"/>
+                    <textarea class="form-control" id="QS-texto"  rows="5"    placeholder="Cuerpo página">${meCount.length > 0 ? meCount[0].text : ""}</textarea>
+                    <button   class="btn btn-info" id="QS-actualizar" onclick="enviaQSomos('${id}')">${meCount.length > 0 ? "Actualizar" : "Crear"}</button>
+                    <button class="btn btn-danger" id="QS-delete" onclick="deleteQSomos('${id}')" ${id === 0 ? "disabled" : ""}>Borrar</button>
                 </div>`;
 
         return putView;
     }
 
-    async function enviaMedioEntrega(id) {
-        const titulo = document.getElementById('ME-titulo');
-        const texto = document.getElementById('ME-texto');
-        const bDelete = document.getElementById('ME-delete');
-        const bActualizar = document.getElementById('ME-actualizar');
+    async function enviaQSomos(id) {
+        const titulo = document.getElementById('QS-titulo');
+        const texto = document.getElementById('QS-texto');
+        const bDelete = document.getElementById('QS-delete');
+        const bActualizar = document.getElementById('QS-actualizar');
         const m = (id == 0) ? "post" : "put";
         
 
-        if (titulo.value.length > 10 && titulo.value.length > 20) {
+        if (titulo.value.length > 10 && texto.value.length > 20) {
             const me = {
                 title: titulo.value,
                 text: texto.value,
                 order: 0,
-                type: 'ME',
+                type: 'QS',
                 Subtype: ''
             }
 
@@ -101,7 +99,7 @@
 
     }
 
-    async function deleteMedioEntrega(id) {
+    async function deleteQSomos(id) {
         
 
         const retorno = await axios({
@@ -122,7 +120,6 @@
         
 
     }
-
 
 </script>
 

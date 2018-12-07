@@ -10,7 +10,17 @@ router.get('/', function(req, res){
 });
 
 router.get('/quienessomos', (req, res) => {
-    res.render('index/about');
+    Utilities.find({ type: 'QS' }, ( err, foundedUti ) => {
+        if (err)
+            console.log(err);
+        else{
+            console.log(foundedUti);
+            res.render('index/about', {
+                fQS: foundedUti
+            });
+        }
+        
+    });
 });
 
 router.get('/mediosentrega', ( req, res ) => {
