@@ -164,10 +164,25 @@
 }
 
 .barra-navegacion {
-    padding: 20px;
+    text-align: center;
 }
 
 .barra-navegacion a {
-    margin-right: 20px;
+    
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
 }
 
+.barra-navegacion .landing-brand {
+    margin: 30px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+body {
+    background: url('./imgs/christin-hume-482925-unsplash.jpg');
+    background-size: contain;
+}
