@@ -164,11 +164,11 @@
 }
 
 .barra-navegacion {
+    margin-top: 20px;
     text-align: center;
 }
 
 .barra-navegacion a {
-    
     text-decoration: none;
     color: white;
     font-weight: bold;
@@ -183,6 +183,6 @@
 }
 
 body {
-    background: url('./imgs/christin-hume-482925-unsplash.jpg');
-    background-size: contain;
+    background: url('./imgs/blur-blurry-bokeh-347139.jpg');
+    background-size: cover;
 }
