@@ -113,7 +113,7 @@ app.post('/auth/register', (req, res) => {
 ##########################*/
 app.listen(
     process.env.PORT || 5001,
-    () => console.log('Funcionando en puerto ...')
+    () => console.log('Funcionando en puerto 5001...')
 );
 
 
