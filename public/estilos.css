@@ -1,7 +1,7 @@
 /* comentar para dos columnas */
 .card {
     margin-top: 20px;
-} */
+} 
 
 .card-body .author-link   {
     min-height: 75px;
@@ -94,12 +94,13 @@
     background: gray;
 }
 .oferta .destacado-libro-imagen {
-    width: 75%;   
+    width: 300px; 
+    max-width: 300px;
 }
 
 .destacado-libro-parrafo {
-    text-align: justify;
-    padding: 10px;
+    /*text-align: justify;
+    padding: 10px;*/
 }
 
 /* ###########################
@@ -182,7 +183,16 @@
     font-size: 50px;
 }
 
-body {
-    background: url('./imgs/blur-blurry-bokeh-347139.jpg');
-    background-size: cover;
+
+
+/* ###########################
+            OFERTAS
+##############################*/
+
+#mostrar-ofertas .card {
+    max-width: 250px;
+}
+
+#mostrar-ofertas .card .card-img {
+    max-height: 350px;
 }
