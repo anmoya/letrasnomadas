@@ -6,7 +6,7 @@ const Utilities = require('../models/utilities');
 
 
 router.get('/', function(req, res){
-    res.render('landing');
+    res.render('views/landing');
 });
 
 router.get('/quienessomos', (req, res) => {
