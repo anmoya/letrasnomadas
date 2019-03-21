@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const Express = require('express');
+const router = Express.Router();
 const Libro     = require('../models/libro');
 const Resena    = require('../models/resena');
 const Utilities = require('../models/utilities');
@@ -9,51 +9,44 @@ router.get('/', function(req, res){
     res.render('landing');
 });
 
-router.get('/quienessomos', (req, res) => {
-    Utilities.find({ type: 'QS' }, ( err, foundedUti ) => {
-        if (err)
-            console.log(err);
-        else{
-            console.log(foundedUti);
-            res.render('index/about', {
-                fQS: foundedUti
-            });
-        }
-        
-    });
+router.get('/quienessomos', async (req, res) => {
+    try {
+        const qs = await Utilities.findOne({ type: 'QS' })
+        if (qs["title"] == null)
+            throw "Ocurrió un error al intentar obtener el recurso. Si esto sigue ocurriendo, contacte con el administrador.";
+        return res.render('index/about', { fQS: qs});
+    } catch (err) {
+        return res.render('error/index', { status: 500, msg: err})
+    };
 });
 
-router.get('/mediosentrega', ( req, res ) => {
-    Utilities.find({ type: 'ME' }, ( err, foundedUti ) => {
-        if (err)
-            console.log(err);
-        else{
-            console.log(foundedUti);
-            res.render('index/entrega', {
-                fME: foundedUti
-            });
-        }
-        
-    });
-    
+router.get('/mediosentrega', async ( req, res ) => {
+    try {
+        const me = await Utilities.findOne({ type: 'MsE' });
+        if (me == null)
+            throw "Error: contacte al weon.";
+        return res.render('index/entrega', { fME: me });
+    } catch (err){
+        return res.render('error/index', ({ status: 500, msg: err}));
+    }    
 });
 
-router.get('/faq', ( req, res ) => {
-    Utilities.find({ type: 'FAQ'}, (err, foundedFAQs) => {
-        if (err)
-            console.log(err);
-        else {
-            let sorted = foundedFAQs;
-            sorted.sort(function(a, b) {
+router.get('/faq', async ( req, res ) => {
+    try {
+        const faq = await Utilities.find({ type: 'FAQ'});
+        if (faq.length < 1)
+            throw "Error: contacte al administrador.";
+            let sorted = faq;
+            sorted.sort((a, b) => {
                 if (a["order"] === b["order"])
                     return a["title"] - b["title"];
                 else
                     return a["order"] - b["order"];
             });
             res.render('index/faq', { faqs : sorted });
-        }
-    });
-
+    } catch (err) {
+        return res.render('error/index', { status:  500, msg: err });
+    }
     
 });
 

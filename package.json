@@ -4,7 +4,7 @@
   "description": "Aplicación web de Libreria Letras Nomadas",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "keywords": [
     "historia",
